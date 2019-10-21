@@ -40,7 +40,7 @@
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
                             <li class="nav-item">
-                                <router-link to="/example">example</router-link>
+                                <router-link class="nav-link" to="/example">example</router-link>
                             </li>
                         @guest
                             <li class="nav-item">
@@ -82,6 +82,10 @@
                     <router-view></router-view>
                 </keep-alive>
             </transition>
+
+            <passport-clients></passport-clients>
+            <passport-authorized-clients></passport-authorized-clients>
+            <passport-personal-access-tokens></passport-personal-access-tokens>
             @yield('content')
         </main>
     </div>

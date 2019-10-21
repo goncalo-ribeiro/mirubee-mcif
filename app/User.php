@@ -8,7 +8,7 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use HasApiTokens, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -36,4 +36,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    //o argumento $nickname devia ter outro nome, pois caso a função não encontre o utilizador com o nickname tenta faze-lo com email
+    //devia ser chamado de $loginCredential
+    public function findForPassport($name) {
+        $user = $this->where('name', $name)->first();
+        if (is_null($user)) {
+            $user = $this->where('email', $nickname)->first();
+        }
+        return $user;
+    }
 }
