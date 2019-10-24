@@ -20,6 +20,17 @@
         <!-- Styles -->
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
+        <script>
+            var myUrl = '{{ env('APP_URL') }}';
+            window.Laravel = <?php echo json_encode([
+                'csrfToken' => csrf_token(),
+            ]); ?>
+        </script>
+
+        <!-- cookie-->
+        <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     </head>
     <body>
         <div id="app">
@@ -79,7 +90,12 @@
             </nav>
         --}}
             <div class="content">
-                <login></login>
+                
+                <transition appear name="slide-fade" mode="out-in">
+                    <keep-alive>
+                        <router-view></router-view>
+                    </keep-alive>
+                </transition>
             </div>
         </div>
     </body>

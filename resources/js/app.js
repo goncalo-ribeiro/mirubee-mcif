@@ -5,12 +5,24 @@
  */
 
 require('./bootstrap');
+require('vue-events')
 
 window.Vue = require('vue');
+window.Event = new Vue();
+//var Cookies = require('js-cookie');
+
 
 import VueRouter from 'vue-router';
-
+import Auth from './components/auth/auth.js';
+import Toasted from 'vue-toasted';
+ 
 Vue.use(VueRouter);
+Vue.use(Auth);
+Vue.use(Toasted, {
+    iconPack : 'material', // set your iconPack, defaults to material. material|fontawesome|custom-class
+    duration : 3000,
+})
+
 
 /**
  * The following block of code may be used to automatically register your
@@ -24,26 +36,8 @@ Vue.use(VueRouter);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 const example = Vue.component('example', require('./components/ExampleComponent.vue').default);
-
-Vue.component(
-    'passport-clients',
-    require('./components/passport/Clients.vue').default
-);
-
-Vue.component(
-    'passport-authorized-clients',
-    require('./components/passport/AuthorizedClients.vue').default
-);
-
-Vue.component(
-    'passport-personal-access-tokens',
-    require('./components/passport/PersonalAccessTokens.vue').default
-);
-
-Vue.component(
-    'login',
-    require('./components/auth/login.vue').default
-);
+const login = Vue.component('login', require('./components/auth/login.vue').default);
+const register = Vue.component('register', require('./components/auth/register.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -52,7 +46,10 @@ Vue.component(
  */
 
 const routes = [
-    //{ path: '/', redirect: '/memoria' },
+    { path: '/', redirect: '/login' },
+    { path: '/#', redirect: '/login' },
+    { path: '/login', component: login },
+    { path: '/register', component: register },
     { path: '/example', component: example },
 ];
 
@@ -60,7 +57,12 @@ const router = new VueRouter({
     routes:routes
 });
 
+axios.defaults.headers.common['X-CSRF-TOKEN'] = Laravel.csrfToken;
+
 const app = new Vue({
     el: '#app',
+    data:{
+        show: true,
+    },
     router,
 });
