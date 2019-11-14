@@ -38,8 +38,7 @@ const example = Vue.component('example', require('./components/ExampleComponent.
 const login = Vue.component('login', require('./components/auth/login.vue').default);
 const register = Vue.component('register', require('./components/auth/register.vue').default);
 const dashboard = Vue.component('dashboard', require('./components/dashboard.vue').default);
-
-import LineExample from './components/LineExample'
+const echart =  Vue.component('echart', require('./components/charts/echart.vue').default);
 
 
 /**
@@ -54,8 +53,11 @@ const routes = [
     { path: '/login', component: login },
     { path: '/register', component: register },
     { path: '/example', component: example },
-    { path: '/dashboard', component: dashboard },
-    { path: '/line', component: LineExample }
+    { path: '/dashboard', component: dashboard,
+        children: [
+            { path: 'echart', component: echart }        
+        ]
+    },
 ];
 
 const router = new VueRouter({

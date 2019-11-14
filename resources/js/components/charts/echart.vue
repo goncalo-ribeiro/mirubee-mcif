@@ -1,31 +1,12 @@
 <template>
-
-<!--
-    <div id="echart" style="height:80vh; width:80vw" class="m-a"></div>
--->
-    <div class="mt-5 container">
-        <div class="row justify-content-center">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">Dashboard</div>
-
-                    <div class="card-body" >
-                        <router-link to="/dashboard/echart">echart</router-link>
-                        <div>
-                            <router-view></router-view>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div id="echart" style="height:70vh" class="m-a">
+        hi there
     </div>
-<!--
-    -->
 </template>
 
 <script>
-    export default {
-        name: "dashboard",
+export default {
+        name: "echart",
         mounted() {
 
             console.log('Component mounted.')
@@ -64,7 +45,7 @@
         methods:{
 
             setupEchartGraph(){
-                var dom = document.getElementById("chart");
+                var dom = document.getElementById("echart");
                 var myChart = echarts.init(dom);
 
                 let gap = (this.yMax - this.yMin) * .10;
