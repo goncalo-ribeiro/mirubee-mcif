@@ -5,7 +5,7 @@
  */
 
 require('./bootstrap');
-require('vue-events')
+require('vue-events');
 
 window.Vue = require('vue');
 window.Event = new Vue();
@@ -15,14 +15,13 @@ window.Event = new Vue();
 import VueRouter from 'vue-router';
 import Auth from './components/auth/auth.js';
 import Toasted from 'vue-toasted';
- 
+
 Vue.use(VueRouter);
 Vue.use(Auth);
 Vue.use(Toasted, {
     iconPack : 'material', // set your iconPack, defaults to material. material|fontawesome|custom-class
     duration : 3000,
 })
-
 
 /**
  * The following block of code may be used to automatically register your
@@ -38,6 +37,10 @@ Vue.use(Toasted, {
 const example = Vue.component('example', require('./components/ExampleComponent.vue').default);
 const login = Vue.component('login', require('./components/auth/login.vue').default);
 const register = Vue.component('register', require('./components/auth/register.vue').default);
+const dashboard = Vue.component('dashboard', require('./components/dashboard.vue').default);
+
+import LineExample from './components/LineExample'
+
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -51,6 +54,8 @@ const routes = [
     { path: '/login', component: login },
     { path: '/register', component: register },
     { path: '/example', component: example },
+    { path: '/dashboard', component: dashboard },
+    { path: '/line', component: LineExample }
 ];
 
 const router = new VueRouter({

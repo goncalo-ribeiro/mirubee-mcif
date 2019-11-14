@@ -9,7 +9,7 @@ define('YOUR_SERVER_URL', env("APP_URL", "http://localhost"));
 define('CLIENT_ID', '2');
 define('CLIENT_SECRET', DB::table('oauth_clients')->where('id', '2')->value('secret'));
 class LoginControllerAPI extends Controller
-{
+{/*
     public function login(Request $request)
     {
         $http = new \GuzzleHttp\Client;
@@ -36,5 +36,5 @@ class LoginControllerAPI extends Controller
         \Auth::guard('api')->user()->token()->revoke();
         \Auth::guard('api')->user()->token()->delete();
         return response()->json(['msg'=>'Token revoked'], 200);
-    }
+    }*/
 }

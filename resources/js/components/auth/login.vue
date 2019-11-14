@@ -47,6 +47,7 @@
                 .then(success => {
                     console.log("Success Login");
                     Vue.toasted.show('Successfully logged in', { icon : 'check'});
+                    this.$router.push('/dashboard')
                 })
                 .catch( error => {
                     console.log("Auth login catch: ", error);
