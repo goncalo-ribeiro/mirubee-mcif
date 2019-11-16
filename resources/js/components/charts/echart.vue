@@ -1,10 +1,19 @@
 <template>
-    <div id="echart" style="height:70vh" class="m-a">
-        hi there
+    <div>
+        <div id="echart" style="height:70vh" class="m-a">
+        </div>
+        <div>
+            <input type="checkbox" id="smooth-checkbox" v-model="smooth" @change="setupEchartGraph">
+            <label for="smooth-checkbox">smooth = {{smooth}}</label>
+
+            <input class="ml-5" type="checkbox" id="timestampsRepetidos-checkbox" v-model="timestampsRepetidos" @change="refresh">
+            <label for="timestampsRepetidos-checkbox">timestampsRepetidos = {{timestampsRepetidos}}</label>
+        </div>
     </div>
 </template>
 
 <script>
+var moment = require('moment');
 export default {
         name: "echart",
         mounted() {
@@ -13,12 +22,17 @@ export default {
             
             axios.get(myUrl + '/api/readings', ).
             then( success => {
-                console.log(this)
+                //console.log(this)
                 this.data = success.data;
-                console.log(this.data);
+                //console.log(this.data);
 
                 this.yAxisData = [];
                 this.xAxisData = [];
+                this.newData = [];
+                this.newerData = [];
+                this.test = [
+                    ["2018-08-15T10:04:01.339Z",1],[ "2018-08-15T10:14:13.914Z",2],[ "2018-08-15T10:40:03.147Z",3],[ "2018-08-15T11:50:14.335Z",4]
+                ];
 
                 success.data.forEach(element => {
                     this.yAxisData.push(element.v1)
@@ -27,7 +41,21 @@ export default {
 
                     if (this.yMin > element.v1) this.yMin = element.v1;
                     
-                    this.xAxisData.push(new Date(element.time*1000).toLocaleTimeString())
+                    let auxDate = new Date(element.time*1000);
+                    let auxVolt = element.v1;
+                    
+                    this.xAxisData.push([auxDate.getHours(), auxDate.getMinutes(), auxDate.getSeconds()].join(':'))
+
+                    let newElement = {
+                        name: auxDate.toString(),
+                        value: [
+                            [auxDate.getFullYear(), auxDate.getMonth() + 1, auxDate.getDate()].join('/'),
+                            auxVolt
+                        ]
+                    }
+                    this.newData.push(newElement);
+                    
+                    this.newerData.push( [auxDate.toJSON(), auxVolt] );
                 });
                 
                 this.setupEchartGraph();
@@ -35,7 +63,12 @@ export default {
         },
         data: function(){
             return {
+                smooth: false,
+                timestampsRepetidos: true,
+
                 data: undefined,
+                //newData: undefined,
+                newerData: undefined,
                 yAxisData: undefined,
                 xAxisData: undefined,
                 yMax: Number.NEGATIVE_INFINITY,
@@ -43,6 +76,47 @@ export default {
             }
         },
         methods:{
+            refresh(){
+                this.yAxisData = [];
+                this.xAxisData = [];
+                this.newData = [];
+                this.newerData = [];
+                this.test = [
+                    ["2018-08-15T10:04:01.339Z",1],[ "2018-08-15T10:14:13.914Z",2],[ "2018-08-15T10:40:03.147Z",3],[ "2018-08-15T11:50:14.335Z",4]
+                ];
+                let timestamps = [];
+
+                this.data.forEach(element => {
+                    if(!timestamps.includes(element.time)){
+                        this.yAxisData.push(element.v1)
+
+                        if (this.yMax < element.v1) this.yMax = element.v1;
+
+                        if (this.yMin > element.v1) this.yMin = element.v1;
+                        
+                        let auxDate = new Date(element.time*1000);
+                        let auxVolt = element.v1;
+                        
+                        this.xAxisData.push([auxDate.getHours(), auxDate.getMinutes(), auxDate.getSeconds()].join(':'))
+
+                        let newElement = {
+                            name: auxDate.toString(),
+                            value: [
+                                [auxDate.getFullYear(), auxDate.getMonth() + 1, auxDate.getDate()].join('/'),
+                                auxVolt
+                            ]
+                        }
+                        this.newData.push(newElement);
+                        
+                        this.newerData.push( [auxDate.toJSON(), auxVolt] );
+                        if(!this.timestampsRepetidos){
+                            timestamps.push(element.time);
+                        } 
+                    }
+                });
+                
+                this.setupEchartGraph();
+            },
 
             setupEchartGraph(){
                 var dom = document.getElementById("echart");
@@ -51,7 +125,7 @@ export default {
                 let gap = (this.yMax - this.yMin) * .10;
                 console.log(gap)
 
-                var option = {
+                var option1 = {
                     tooltip: {
                         trigger: 'axis',
                         position: function (pt) {
@@ -76,11 +150,19 @@ export default {
                             }
                         }
                     },
-                    xAxis: {
-                        type: 'category',
-                        boundaryGap: false,
-                        data: this.xAxisData,
-                    },
+                    calculable : true,
+                    xAxis : [
+                        {
+                            type: 'time',
+                            boundaryGap:false,
+                            axisLabel: {
+                                formatter: (value =>
+                                    moment(value).format('HH:mm:ss')
+                                    //this.timestampFormatter(value)
+                                )
+                            }
+                        }
+                    ],
                     yAxis: {
                         type: 'value',
                         boundaryGap: [0, '100%'],
@@ -115,7 +197,7 @@ export default {
                         {
                             name:'voltagem',
                             type:'line',
-                            smooth:true,
+                            smooth:this.smooth,
                             symbol: 'none',
                             sampling: 'average',
                             itemStyle: {
@@ -130,12 +212,90 @@ export default {
                                     color: 'rgb(255, 70, 131)'
                                 }])
                             },
-                            data: this.yAxisData,
+                            data: this.newerData,
                         }
                     ]
                 }
+/*
+                var option2 = {
+                    title: {
+                        text: 'voltagem'
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        formatter: function (params) {
+                            params = params[0];
+                            var auxDate = new Date(params.name);
+                                return auxDate.getauxDate() + '/' + (auxDate.getMonth() + 1) + '/' + auxDate.getFullYear() + ' : ' + params.value[1];
+                        },
+                        axisPointer: {
+                            animation: false
+                        }
+                    },
+                    xAxis: {
+                        type: 'time',
+                        splitLine: {
+                            show: false
+                        }
+                    },
+                    yAxis: {
+                        type: 'value',
+                        boundaryGap: [0, '100%'],
+                        splitLine: {
+                            show: false
+                        }
+                    },
+                    series: [{
+                        name: 'voltagem',
+                        type: 'line',
+                        showSymbol: false,
+                        hoverAnimation: false,
+                        data: this.newData
+                    }]
+                };
 
-                myChart.setOption(option, true);
+                var option3 ={
+                    title : {
+                        text: 'voltagem',
+                    },
+                    tooltip : {
+                        trigger: 'axis'
+                    },
+                    calculable : true,
+                    xAxis : [
+                        {
+                            type: 'time',
+                            boundaryGap:false,
+                            axisLabel: {
+                                formatter: (function(value){
+                                    //return moment(value).format('HH:mm');
+                                    return value;
+                                })
+                            }
+                        }
+                    ],
+                    yAxis: {
+                        type: 'value',
+                        boundaryGap: [0, '100%'],
+                        min: Math.round(this.yMin - gap),
+                        max: Math.round(this.yMax + gap),
+                        //min: 210,
+                        //max: 260
+                        //scale: true,
+
+                    },
+                    series : [
+                        {
+                            name:'voltagem',
+                            type:'line',
+                            smooth:true,
+                            itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                            data: this.newerData,
+                        }
+                    ]
+                }
+*/
+                myChart.setOption(option1, true);
             }
         }
     }

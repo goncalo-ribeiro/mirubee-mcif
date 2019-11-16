@@ -1,40 +1,15 @@
 <template>
-
-<!--
-    <div id="echart" style="height:80vh; width:80vw" class="m-a"></div>
--->
-    <div class="mt-5 container">
-        <div class="row justify-content-center">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">Dashboard</div>
-
-                    <div class="card-body" >
-                        <router-link class="mx-2" to="/dashboard/echartString">echart (toString)</router-link>
-                        <router-link class="mx-2" to="/dashboard/echart">echart</router-link>
-                        <router-link class="mx-2" to="/dashboard/chartjs">chart.js</router-link>
-                        <router-link class="mx-2" to="/dashboard/googlechart">google chart</router-link>
-                        <router-link class="mx-2" to="/dashboard/googlechartMaterial">google chart (material design)</router-link>
-                        <router-link class="mx-2" to="/dashboard/plotly">plotly</router-link>
-                        <div>
-                            <router-view></router-view>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div id="echart" style="height:70vh" class="m-a">
     </div>
-<!--
-    -->
 </template>
 
 <script>
-    export default {
-        name: "dashboard",
+export default {
+        name: "echart",
         mounted() {
 
             console.log('Component mounted.')
-            /*
+            
             axios.get(myUrl + '/api/readings', ).
             then( success => {
                 console.log(this)
@@ -56,7 +31,6 @@
                 
                 this.setupEchartGraph();
             });
-            */
         },
         data: function(){
             return {
@@ -70,7 +44,7 @@
         methods:{
 
             setupEchartGraph(){
-                var dom = document.getElementById("chart");
+                var dom = document.getElementById("echart");
                 var myChart = echarts.init(dom);
 
                 let gap = (this.yMax - this.yMin) * .10;

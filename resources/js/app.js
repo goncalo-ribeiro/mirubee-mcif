@@ -38,7 +38,12 @@ const example = Vue.component('example', require('./components/ExampleComponent.
 const login = Vue.component('login', require('./components/auth/login.vue').default);
 const register = Vue.component('register', require('./components/auth/register.vue').default);
 const dashboard = Vue.component('dashboard', require('./components/dashboard.vue').default);
+const echartString =  Vue.component('echartString', require('./components/charts/echartString.vue').default);
 const echart =  Vue.component('echart', require('./components/charts/echart.vue').default);
+const chartjs =  Vue.component('chartjs', require('./components/charts/chart.js.vue').default);
+const googlechart = Vue.component('googlechart', require('./components/charts/googlechart.vue').default);
+const googlechartMaterial = Vue.component('googlechartMaterial', require('./components/charts/googlechartMaterial.vue').default);
+const plotly = Vue.component('plotly', require('./components/charts/plotly.vue').default);
 
 
 /**
@@ -55,7 +60,12 @@ const routes = [
     { path: '/example', component: example },
     { path: '/dashboard', component: dashboard,
         children: [
-            { path: 'echart', component: echart }        
+            { path: 'echartString', component: echartString },
+            { path: 'echart', component: echart },
+            { path: 'plotly', component: plotly },
+            { path: 'chartjs', component: chartjs },
+            { path: 'googlechart', component: googlechart },
+            { path: 'googlechartMaterial', component: googlechartMaterial },
         ]
     },
 ];

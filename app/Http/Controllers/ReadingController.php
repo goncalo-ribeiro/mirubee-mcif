@@ -14,7 +14,10 @@ class ReadingController extends Controller
      */
     public function index()
     {
-        return Reading::all();
+        //return Reading::all();
+        return Reading::whereBetween('time', [1573570607, 1573572787])->get();
+        //where('time', '<', 1 )->get();
+
     }
 
     /**

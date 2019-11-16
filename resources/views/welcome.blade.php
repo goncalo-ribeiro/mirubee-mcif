@@ -32,9 +32,28 @@
 
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
+
+        <!-- echarts-->
         <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    
+        <!-- apexcharts-->    
 <!--
         <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+-->
+
+        <!-- chart.js-->
+<!--
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.2/dist/Chart.min.js"></script>
+-->
+
+        <!-- google charts-->
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<!--
+-->
+
+        <!-- plotly-->
+        <script src="https://cdn.plot.ly/plotly-1.2.0.min.js"></script>
+<!--
 -->
 
     </head>
