@@ -30,6 +30,7 @@
         <!-- cookie-->
         <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 
+        <!-- icon pack-->
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 
@@ -47,13 +48,13 @@
 -->
 
         <!-- google charts-->
-        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <!--
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 -->
 
         <!-- plotly-->
-        <script src="https://cdn.plot.ly/plotly-1.2.0.min.js"></script>
 <!--
+        <script src="https://cdn.plot.ly/plotly-1.2.0.min.js"></script>
 -->
 
     </head>

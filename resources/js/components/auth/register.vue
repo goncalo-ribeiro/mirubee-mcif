@@ -8,16 +8,16 @@
                     <hr class="my-4">
                     <div class="form-group">
                         <div class="input-group mb-3">
-                            <input required autofocus type="email" v-model="email" class="form-control" id="emailInput" placeholder="email">
+                            <input required autofocus type="email" v-model="email" class="form-control" id="emailInput" placeholder="email" v-on:keyup.enter="registerClick">
                         </div>
                         <div class="input-group mb-3">
-                            <input required type="text" v-model="name" class="form-control" id="nameInput" placeholder="name">
+                            <input required type="text" v-model="name" class="form-control" id="nameInput" placeholder="name" v-on:keyup.enter="registerClick">
                         </div>
                         <div class="input-group mb-3">
-                            <input required type="password" v-model="password" class="form-control" id="passwordInput" placeholder="password">
+                            <input required type="password" v-model="password" class="form-control" id="passwordInput" placeholder="password" v-on:keyup.enter="registerClick"> 
                         </div>
                         <div class="input-group mb-3">
-                            <input required type="password" v-model="passwordConfirmation" class="form-control" id="passwordConfirmationInput" placeholder="password confirmation">
+                            <input required type="password" v-model="passwordConfirmation" class="form-control" id="passwordConfirmationInput" placeholder="password confirmation" v-on:keyup.enter="registerClick">
                         </div>
                         <div class="input-group mb-3">
                             <button type="button" class="btn btn-primary" @click.prevent="registerClick">register</button>

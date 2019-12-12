@@ -15,6 +15,7 @@ window.Event = new Vue();
 import VueRouter from 'vue-router';
 import Auth from './components/auth/auth.js';
 import Toasted from 'vue-toasted';
+import auth from './components/auth/auth.js';
 
 Vue.use(VueRouter);
 Vue.use(Auth);
@@ -37,14 +38,21 @@ Vue.use(Toasted, {
 const example = Vue.component('example', require('./components/ExampleComponent.vue').default);
 const login = Vue.component('login', require('./components/auth/login.vue').default);
 const register = Vue.component('register', require('./components/auth/register.vue').default);
+const mainComponent = Vue.component('mainComponent', require('./components/mainComponent.vue').default);
 const dashboard = Vue.component('dashboard', require('./components/dashboard.vue').default);
+const tarifario = Vue.component('tarifario', require('./components/tarifario.vue').default);
+const alertas = Vue.component('alertas', require('./components/alertas.vue').default);
+const relatorios = Vue.component('relatorios', require('./components/relatorios.vue').default);
+const listaRelatorios = Vue.component('listaRelatorios', require('./components/relatorios/listaRelatorios.vue').default);
+
+/*
 const echartString =  Vue.component('echartString', require('./components/charts/echartString.vue').default);
 const echart =  Vue.component('echart', require('./components/charts/echart.vue').default);
 const chartjs =  Vue.component('chartjs', require('./components/charts/chart.js.vue').default);
 const googlechart = Vue.component('googlechart', require('./components/charts/googlechart.vue').default);
 const googlechartMaterial = Vue.component('googlechartMaterial', require('./components/charts/googlechartMaterial.vue').default);
 const plotly = Vue.component('plotly', require('./components/charts/plotly.vue').default);
-
+*/
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -53,11 +61,23 @@ const plotly = Vue.component('plotly', require('./components/charts/plotly.vue')
  */
 
 const routes = [
+    /*
     { path: '/', redirect: '/login' },
     { path: '/#', redirect: '/login' },
+    */
     { path: '/login', component: login },
     { path: '/register', component: register },
     { path: '/example', component: example },
+    { path: '/', component: mainComponent,
+        children: [
+            { path: '/dashboard', component: dashboard},
+            { path: '/tarifario', component: tarifario},
+            { path: '/alertas', component: alertas},
+            { path: '/relatorios', component: relatorios,
+        children: [
+            { path: '/relatorios/:year', component: listaRelatorios,}]},
+    ]},
+    /*
     { path: '/dashboard', component: dashboard,
         children: [
             { path: 'echartString', component: echartString },
@@ -67,12 +87,22 @@ const routes = [
             { path: 'googlechart', component: googlechart },
             { path: 'googlechartMaterial', component: googlechartMaterial },
         ]
-    },
+    },*/
 ];
+
+
 
 const router = new VueRouter({
     routes:routes
 });
+
+router.beforeEach((to, from, next) => {
+    if ( to.path !== '/login' && to.path !== '/register'){
+        if (!auth.user) next('/login')
+        else next()
+    }
+    else next()
+})
 
 axios.defaults.headers.common['X-CSRF-TOKEN'] = Laravel.csrfToken;
 
