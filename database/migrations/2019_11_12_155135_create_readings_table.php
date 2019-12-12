@@ -13,10 +13,12 @@ class CreateReadingsTable extends Migration
      */
     public function up()
     {
+        /*
         Schema::create('readings', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->timestamps();
         });
+        */
     }
 
     /**
@@ -26,6 +28,6 @@ class CreateReadingsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('readings');
+        //Schema::dropIfExists('readings');
     }
 }
