@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Reading;
+use App\ReadingSinglePhase;
 use Illuminate\Http\Request;
 
-class ReadingController extends Controller
+class ReadingSinglePhaseController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,10 +14,7 @@ class ReadingController extends Controller
      */
     public function index()
     {
-        //return Reading::all();
-        return Reading::whereBetween('time', [1573570607, 1573572787])->get();
-        //where('time', '<', 1 )->get();
-
+        //
     }
 
     /**
@@ -44,10 +41,10 @@ class ReadingController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Reading  $reading
+     * @param  \App\ReadingSinglePhase  $readingSinglePhase
      * @return \Illuminate\Http\Response
      */
-    public function show(Reading $reading)
+    public function show(ReadingSinglePhase $readingSinglePhase)
     {
         //
     }
@@ -55,10 +52,10 @@ class ReadingController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Reading  $reading
+     * @param  \App\ReadingSinglePhase  $readingSinglePhase
      * @return \Illuminate\Http\Response
      */
-    public function edit(Reading $reading)
+    public function edit(ReadingSinglePhase $readingSinglePhase)
     {
         //
     }
@@ -67,10 +64,10 @@ class ReadingController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Reading  $reading
+     * @param  \App\ReadingSinglePhase  $readingSinglePhase
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Reading $reading)
+    public function update(Request $request, ReadingSinglePhase $readingSinglePhase)
     {
         //
     }
@@ -78,10 +75,10 @@ class ReadingController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Reading  $reading
+     * @param  \App\ReadingSinglePhase  $readingSinglePhase
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Reading $reading)
+    public function destroy(ReadingSinglePhase $readingSinglePhase)
     {
         //
     }

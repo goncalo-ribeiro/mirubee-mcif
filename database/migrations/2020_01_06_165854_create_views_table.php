@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateReadingsTable extends Migration
+class CreateViewsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,15 @@ class CreateReadingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('readings', function (Blueprint $table) {
+        Schema::create('views', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->timestamps();
+            $table->text('title');
+            $table->unsignedBigInteger('site_id');
+        });
+
+        Schema::table('views', function($table) {
+            $table->foreign('site_id')->references('id')->on('sites')->onDelete('cascade');;
         });
     }
 
@@ -26,6 +32,6 @@ class CreateReadingsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('readings');
+        Schema::dropIfExists('views');
     }
 }
