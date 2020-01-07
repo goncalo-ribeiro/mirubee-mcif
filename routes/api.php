@@ -22,4 +22,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('users/email/{email}', 'UserControllerApi@userByEmail');
 
-Route::get('readings', 'ReadingController@index');
+Route::get('readings', 'ReadingThreePhaseController@index');

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark">
             <div class="container">
                 <a class="navbar-brand">
                     Mirubee-mcif
@@ -12,17 +12,17 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto" >
-                        <li class="nav-item" v-bind:class="{ active: activeTab == 'dashboard' }" v-on:click="activeTab = 'dashboard'">
-                            <router-link class="nav-link" to="/dashboard/">dashboard</router-link>
+                        <li class="nav-item" v-bind:class="{ active: activeTab == 'sites' }" v-on:click="activeTab = 'sites'">
+                            <router-link class="nav-link" to="/sites/">sites</router-link>
                         </li>
-                        <li class="nav-item" v-bind:class="{ active: activeTab == 'tarifario' }" v-on:click="activeTab = 'tarifario'">
-                            <router-link class="nav-link" to="/tarifario">tarifário</router-link>
+                        <li class="nav-item" v-bind:class="{ active: activeTab == 'tariffs' }" v-on:click="activeTab = 'tariffs'">
+                            <router-link class="nav-link" to="/tariffs">tariffs</router-link>
                         </li>
-                        <li class="nav-item" v-bind:class="{ active: activeTab == 'alertas' }" v-on:click="activeTab = 'alertas'">
-                            <router-link class="nav-link" to="/alertas">alertas</router-link>
+                        <li class="nav-item" v-bind:class="{ active: activeTab == 'alerts' }" v-on:click="activeTab = 'alerts'">
+                            <router-link class="nav-link" to="/alerts">alerts</router-link>
                         </li>
-                        <li class="nav-item" v-bind:class="{ active: activeTab == 'relatorios' }" v-on:click="activeTab = 'relatorios'">
-                            <router-link class="nav-link" to="/relatorios">relatorios</router-link>
+                        <li class="nav-item" v-bind:class="{ active: activeTab == 'reports' }" v-on:click="activeTab = 'reports'">
+                            <router-link class="nav-link" to="/reports">reports</router-link>
                         </li>
                     </ul>
                     <!-- Right Side Of Navbar -->
@@ -66,7 +66,7 @@
         data() {
             return {
                 user: Auth.user,     
-                activeTab: 'dashboard',
+                activeTab: 'sites',
             }
         },
     }

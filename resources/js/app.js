@@ -39,11 +39,11 @@ const example = Vue.component('example', require('./components/ExampleComponent.
 const login = Vue.component('login', require('./components/auth/login.vue').default);
 const register = Vue.component('register', require('./components/auth/register.vue').default);
 const mainComponent = Vue.component('mainComponent', require('./components/mainComponent.vue').default);
-const dashboard = Vue.component('dashboard', require('./components/dashboard.vue').default);
-const tarifario = Vue.component('tarifario', require('./components/tarifario.vue').default);
-const alertas = Vue.component('alertas', require('./components/alertas.vue').default);
-const relatorios = Vue.component('relatorios', require('./components/relatorios.vue').default);
-const listaRelatorios = Vue.component('listaRelatorios', require('./components/relatorios/listaRelatorios.vue').default);
+const sites = Vue.component('sites', require('./components/sites.vue').default);
+const tariffs = Vue.component('tariffs', require('./components/tariffs.vue').default);
+const alerts = Vue.component('alerts', require('./components/alerts.vue').default);
+const reports = Vue.component('reports', require('./components/reports.vue').default);
+const reportsList = Vue.component('reportsList', require('./components/reports/reportsList.vue').default);
 
 /*
 const echartString =  Vue.component('echartString', require('./components/charts/echartString.vue').default);
@@ -70,15 +70,15 @@ const routes = [
     { path: '/example', component: example },
     { path: '/', component: mainComponent,
         children: [
-            { path: '/dashboard', component: dashboard},
-            { path: '/tarifario', component: tarifario},
-            { path: '/alertas', component: alertas},
-            { path: '/relatorios', component: relatorios,
+            { path: '/sites', component: sites},
+            { path: '/tariffs', component: tariffs},
+            { path: '/alerts', component: alerts},
+            { path: '/reports', component: reports,
         children: [
-            { path: '/relatorios/:year', component: listaRelatorios,}]},
+            { path: '/reports/:year', component: reportsList,}]},
     ]},
     /*
-    { path: '/dashboard', component: dashboard,
+    { path: '/sites', component: sites,
         children: [
             { path: 'echartString', component: echartString },
             { path: 'echart', component: echart },

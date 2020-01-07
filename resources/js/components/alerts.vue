@@ -5,28 +5,28 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        alertas
+                        alerts
                         <span style="float: right!important;">
-                            <button type="button" class="btn btn-secondary btn-sm">adicionar alerta <i class="material-icons" style="font-size:13px; vertical-align: middle;">add_alert</i> </button>
+                            <button type="button" class="btn btn-secondary btn-sm">create alert <i class="material-icons" style="font-size:13px; vertical-align: middle;">add_alert</i> </button>
                         </span>
                     </div>
 
                     <div class="card-body" >
                         <div class="list-group">
                             <a class="list-group-item clearfix">
-                                voltagem superior a 260 Volts
+                                voltage higher than 260 Volts
                                 <span style="float: right!important;">
-                                    <button type="button" class="btn btn-primary btn-sm">consultar</button>
-                                    <button type="button" class="btn btn-primary btn-sm">editar</button>
-                                    <button type="button" class="btn btn-danger btn-sm">remover</button>
+                                    <button type="button" class="btn btn-primary btn-sm">view</button>
+                                    <button type="button" class="btn btn-primary btn-sm">edit</button>
+                                    <button type="button" class="btn btn-danger btn-sm">remove</button>
                                 </span>
                             </a>
                             <a class="list-group-item clearfix" onclick="alert('Action2 -> Details');">
-                                consumo superior a 350 kwh
+                                consumption higher than 350 kwh
                                 <span style="float: right!important;">
-                                    <button type="button" class="btn btn-primary btn-sm">consultar</button>
-                                    <button type="button" class="btn btn-primary btn-sm">editar</button>
-                                    <button type="button" class="btn btn-danger btn-sm">remover</button>
+                                    <button type="button" class="btn btn-primary btn-sm">view</button>
+                                    <button type="button" class="btn btn-primary btn-sm">edit</button>
+                                    <button type="button" class="btn btn-danger btn-sm">remove</button>
                                 </span>
                             </a>
                         </div>

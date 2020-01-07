@@ -4,7 +4,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        relatorios
+                        reports
                         <ul class="nav nav-tabs card-header-tabs mt-2">
                             <li class="nav-item" style="cursor: pointer;" v-on:click="activeYear = '2019', meses=['outubro', 'novembro', 'dezembro']">
                                 <a class="nav-link" v-bind:class="{ active: activeYear == '2019' }">2019</a>
@@ -16,7 +16,7 @@
                     </div>
 
                     <div class="card-body">
-                        <listaRelatorios v-bind:meses="meses"></listaRelatorios>
+                        <reportsList v-bind:meses="meses"></reportsList>
                     </div>
                 </div>
             </div>
