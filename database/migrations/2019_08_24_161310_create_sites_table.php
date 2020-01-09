@@ -18,8 +18,8 @@ class CreateSitesTable extends Migration
             $table->timestamps();
             $table->text('name');
             $table->unsignedBigInteger('user_id');
-            $table->text('location');
-            $table->unsignedBigInteger('tariff_id');
+            $table->text('location')->nullable();
+            $table->unsignedBigInteger('tariff_id')->nullable();
         });
         
         Schema::table('sites', function($table) {

@@ -7,7 +7,7 @@
         <div class="row justify-content-center">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header">dashboard</div>
+                    <div class="card-header">{{siteName}}</div>
 
                     <div class="card-body" >
                         <div>
@@ -37,9 +37,15 @@ import Auth from './auth/auth.js';
 
 export default {
         name: "dashboard",
+        activated() {
+            console.log(this.$route.params)
+            this.name = this.$route.params.siteName;
+            this.id = this.$route.params.siteId;
+        },
         mounted() {
             console.log('Component mounted.')
-            
+    
+            /*
             axios.get(myUrl + '/api/readings', ).
             then( success => {
                 //console.log(this)
@@ -80,6 +86,7 @@ export default {
                 
                 this.setupEchartGraph();
             });
+            */
         },
         data: function(){
             return {
@@ -92,6 +99,26 @@ export default {
                 xAxisData: undefined,
                 yMax: Number.NEGATIVE_INFINITY,
                 yMin: Number.POSITIVE_INFINITY,
+            }
+        },
+        computed: {
+            siteName: function () {
+                return this.$route.params.siteName;
+            },
+            siteId: function () {
+                return this.$route.params.siteId;
+            },
+        },
+        watch: { 
+            '$route.params.siteId': {
+                handler: function(search) {
+                    console.log(search)
+                },
+                deep: true,
+                immediate: true
+            },
+            siteName: function (){
+                console.log('siteName changed')
             }
         },
         methods:{

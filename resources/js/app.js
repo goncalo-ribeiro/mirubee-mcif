@@ -70,7 +70,8 @@ const routes = [
     { path: '/example', component: example },
     { path: '/', component: mainComponent,
         children: [
-            { path: '/sites', component: sites},
+            //{ path: '/sites', component: sites, name: 'sites'},
+            { path: '/sites/:siteId', component: sites, name: 'sites'},
             { path: '/tariffs', component: tariffs},
             { path: '/alerts', component: alerts},
             { path: '/reports', component: reports,

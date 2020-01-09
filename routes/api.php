@@ -20,6 +20,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
+Route::middleware('auth:api')->get('/sites', 'SiteController@index');
+Route::middleware('auth:api')->post('/sites', 'SiteController@store');
+
+
 Route::get('users/email/{email}', 'UserControllerApi@userByEmail');
 
 Route::get('readings', 'ReadingThreePhaseController@index');

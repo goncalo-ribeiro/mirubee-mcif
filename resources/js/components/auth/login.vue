@@ -46,8 +46,8 @@
                 this.$auth.login(credentials)
                 .then(success => {
                     console.log("Success Login");
-                    Vue.toasted.show('Successfully logged in', { icon : 'check'});
-                    this.$router.push('/sites')
+                    Vue.toasted.show('Successfully logged in', { icon : 'check', type: 'success'});
+                    this.$router.push('/alerts')
                 })
                 .catch( error => {
                     console.log("Auth login catch: ", error);

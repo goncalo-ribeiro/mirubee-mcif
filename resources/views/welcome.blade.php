@@ -34,7 +34,6 @@
         <!-- icon pack-->
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-
         <!-- echarts-->
         <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
     

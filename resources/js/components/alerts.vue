@@ -7,7 +7,7 @@
                     <div class="card-header">
                         alerts
                         <span style="float: right!important;">
-                            <button type="button" class="btn btn-secondary btn-sm">create alert <i class="material-icons" style="font-size:13px; vertical-align: middle;">add_alert</i> </button>
+                            <button type="button" class="btn btn-secondary btn-sm">create alert <i class="material-icons" style="font-size:13px; vertical-align: middle;">add</i> </button>
                         </span>
                     </div>
 

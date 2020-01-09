@@ -38,6 +38,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function sites()
+    {
+        return $this->hasMany('App\Site');
+    }
+
     //o argumento $nickname devia ter outro nome, pois caso a função não encontre o utilizador com o nickname tenta faze-lo com email
     //devia ser chamado de $loginCredential
     /*
