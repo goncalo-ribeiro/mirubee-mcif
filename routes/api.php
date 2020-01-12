@@ -23,6 +23,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::middleware('auth:api')->get('/sites', 'SiteController@index');
 Route::middleware('auth:api')->post('/sites', 'SiteController@store');
+Route::middleware('auth:api')->delete('/sites', 'SiteController@destroy');
+Route::middleware('auth:api')->put('/sites', 'SiteController@update');
 
 
 Route::get('users/email/{email}', 'UserControllerApi@userByEmail');

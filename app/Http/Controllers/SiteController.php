@@ -43,25 +43,21 @@ class SiteController extends Controller
     public function store(Request $request)
     {
         $site = new Site;
-        $name = $request->siteName;
-        $location = $request->siteLocation;
+        $name = $request->name;
+        $location = $request->location;
         $user = Auth::user();
 
-        if (is_null($name) || $name == ""){
-            return response()->json(['msg' => "the site's name can't be empty"], 400);
-        }
+        $validation = $request->validate([
+            'name' => 'required | unique:sites',
+        ]);
+
         $site->name = $name;
-        if(is_null($location)){
-            $site->location = $location;
-        }
+        $site->location = $location;
 
         $site->user()->associate(Auth::user());
-
-        //$user->sites()->associate($site);
-
         $site->save();
 
-        return response()->json(['msg' => 'a new site was created', 'site' => new SiteResource($site)], 201);
+        return response()->json(['message' => 'a new site was created', 'site' => new SiteResource($site)], 201);
     }
 
     /**
@@ -95,7 +91,30 @@ class SiteController extends Controller
      */
     public function update(Request $request, Site $site)
     {
-        //
+        $site = Site::where('id', $request->id)->first();
+        $name = $request->name;
+        $location = $request->location;
+        $user = Auth::user();
+        
+        if (is_null($site)){
+            $temp = (object) ['id' => ["No site was found"]];
+            return response()->json(['errors' => $temp], 400);
+        }
+        if ($user->id != $site->user->id){
+            $temp = (object) ['user' => ["This site doesn't belong to the user"]];
+            return response()->json(['errors' => $temp], 400);
+        }
+
+        $validation = $request->validate([
+            'name' => 'required | unique:sites',
+        ]);
+
+        $site->name = $name;
+        $site->location = $location;
+
+        $site->save();
+
+        return response()->json(['message' => 'This site was updated', 'site' => new SiteResource($site)], 201);
     }
 
     /**
@@ -104,8 +123,20 @@ class SiteController extends Controller
      * @param  \App\Site  $site
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Site $site)
+    public function destroy(Request $request)
     {
-        //
+        $site = Site::where('id', $request->id)->first();
+        $user = Auth::user();
+
+        if (is_null($site)){
+            $temp = (object) ['id' => ["No site was found"]];
+            return response()->json(['errors' => $temp], 400);
+        }
+        if ($user->id != $site->user->id){
+            $temp = (object) ['user' => ["This site doesn't belong to the user"]];
+            return response()->json(['errors' => $temp], 400);
+        }
+        Site::destroy($request->id);
+        return response()->json(['message' => 'the selected site was deleted', 'site' => new SiteResource($site)], 200);
     }
 }

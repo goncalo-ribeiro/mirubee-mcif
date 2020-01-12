@@ -1,26 +1,65 @@
 <template>
+    <div>
 
-<!--
-    <div id="echart" style="height:80vh; width:80vw" class="m-a"></div>
--->
-    <div class="mt-5 container">
-        <div class="row justify-content-center">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">{{siteName}}</div>
+    <!--
+        <div id="echart" style="height:80vh; width:80vw" class="m-a"></div>
+    -->
+        <div class="mt-5 container">
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <span style="vertical-align: middle;">
+                                {{siteName}}
+                            </span>
+                            <span style="float: right!important;">
+                                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#update-site-modal">edit <i class="material-icons" style="padding-left:4px; vertical-align: middle;">edit</i> </button>
+                                <button type="button" class="btn btn-danger btn-sm" v-on:click="deleteSite">remove <i class="material-icons" style="padding-left:4px; vertical-align: middle;">delete</i></button>
+                            </span>
+                        </div>
 
-                    <div class="card-body" >
-                        <div>
-                            <div id="echart" style="height:70vh" class="m-a">
-                            </div>
+                        <div class="card-body" >
                             <div>
-                                <input type="checkbox" id="smooth-checkbox" v-model="smooth" @change="setupEchartGraph">
-                                <label for="smooth-checkbox">smooth = {{smooth}}</label>
+                                <div id="echart" style="height:70vh" class="m-a">
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="smooth-checkbox" v-model="smooth" @change="setupEchartGraph">
+                                    <label for="smooth-checkbox">smooth = {{smooth}}</label>
 
-                                <input class="ml-5" type="checkbox" id="timestampsRepetidos-checkbox" v-model="timestampsRepetidos" @change="refresh">
-                                <label for="timestampsRepetidos-checkbox">timestampsRepetidos = {{timestampsRepetidos}}</label>
+                                    <input class="ml-5" type="checkbox" id="timestampsRepetidos-checkbox" v-model="timestampsRepetidos" @change="refresh">
+                                    <label for="timestampsRepetidos-checkbox">timestampsRepetidos = {{timestampsRepetidos}}</label>
+                                </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="update-site-modal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="updateModalLabel">update {{tempName}}<i class="material-icons" style="padding-left:5px; vertical-align: middle;">edit</i></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        
+                        <label for="update-site-name">your site's name</label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="update-site-name" placeholder="site's name" v-model="tempName" v-on:keyup.enter="updateSite">
+                        </div>
+
+                        <label for="update-site-location">your site's location (optional)</label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="update-site-location" placeholder="site's location" v-model="tempLocation" v-on:keyup.enter="updateSite">
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">cancel</button>
+                        <button type="button" class="btn btn-primary" v-on:click="updateSite">update site</button>
                     </div>
                 </div>
             </div>
@@ -36,15 +75,18 @@ var moment = require('moment');
 import Auth from './auth/auth.js';
 
 export default {
-        name: "dashboard",
-        activated() {
-            console.log(this.$route.params)
-            this.name = this.$route.params.siteName;
-            this.id = this.$route.params.siteId;
-        },
+        name: "site",
         mounted() {
             console.log('Component mounted.')
-    
+
+            $('#update-site-modal').on('show.bs.modal', () => {
+                console.log('show')
+                this.tempName = this.siteName;
+                this.tempLocation = this.siteLocation;
+            });
+            $('#update-site-modal').on('shown.bs.modal', () => {
+                $('#update-site-name').focus();
+            }); 
             /*
             axios.get(myUrl + '/api/readings', ).
             then( success => {
@@ -90,6 +132,9 @@ export default {
         },
         data: function(){
             return {
+                tempName: undefined,
+                tempLocation: undefined,
+
                 smooth: false,
                 timestampsRepetidos: true,
 
@@ -101,27 +146,61 @@ export default {
                 yMin: Number.POSITIVE_INFINITY,
             }
         },
-        computed: {
-            siteName: function () {
-                return this.$route.params.siteName;
+        props: {
+            siteName: {
+                type: String,
             },
-            siteId: function () {
-                return this.$route.params.siteId;
+            siteId: {
+                type: Number,
             },
-        },
-        watch: { 
-            '$route.params.siteId': {
-                handler: function(search) {
-                    console.log(search)
-                },
-                deep: true,
-                immediate: true
+            siteLocation: {
+                type: String,
             },
-            siteName: function (){
-                console.log('siteName changed')
-            }
         },
         methods:{
+            deleteSite(){
+                axios.delete(myUrl+ "/api/sites", {data: {id : this.siteId}})
+                .then(response => {
+                    console.log(response);
+                    Vue.toasted.show('Site deleted', { icon : 'delete', type: 'success'});
+                    this.$emit('site-deleted', response.data.site.id)
+                })
+                .catch(error => {
+                    console.log(error);
+                    let errors = error.response.data.errors;
+
+                    for (let key in errors){
+                        errors[key].forEach(err => 
+                            Vue.toasted.show(err, { icon : 'cancel', type: 'error'})
+                        );
+                    }
+                });
+            },
+            updateSite(){
+                if( this.tempName == "" ){
+                    Vue.toasted.show("The site's name can't be empty", { icon : 'cancel', type: 'error'});
+                    return;
+                }
+                axios.put(myUrl+"/api/sites", { name : this.tempName, location : this.tempLocation, id : this.siteId})
+                .then( response => {
+                    console.log(response);
+                    $('#update-site-modal').modal('hide')
+                    Vue.toasted.show('Site update', { icon : 'check', type: 'success'});
+                    
+                    this.$emit('site-updated', response.data.site)
+                })
+                .catch(error => {
+                    console.log(error.response);
+                    let errors = error.response.data.errors;
+
+                    for (let key in errors){
+                        errors[key].forEach(err => 
+                            Vue.toasted.show(err, { icon : 'cancel', type: 'error'})
+                        );
+                    }
+
+                })
+            },
             refresh(){
                 this.yAxisData = [];
                 this.xAxisData = [];

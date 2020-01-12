@@ -40,6 +40,8 @@ const login = Vue.component('login', require('./components/auth/login.vue').defa
 const register = Vue.component('register', require('./components/auth/register.vue').default);
 const mainComponent = Vue.component('mainComponent', require('./components/mainComponent.vue').default);
 const sites = Vue.component('sites', require('./components/sites.vue').default);
+const siteRetriever = Vue.component('sites', require('./components/siteRetriever.vue').default);
+const sitePicker = Vue.component('sites', require('./components/sitePicker.vue').default);
 const tariffs = Vue.component('tariffs', require('./components/tariffs.vue').default);
 const alerts = Vue.component('alerts', require('./components/alerts.vue').default);
 const reports = Vue.component('reports', require('./components/reports.vue').default);
@@ -70,8 +72,9 @@ const routes = [
     { path: '/example', component: example },
     { path: '/', component: mainComponent,
         children: [
-            //{ path: '/sites', component: sites, name: 'sites'},
-            { path: '/sites/:siteId', component: sites, name: 'sites'},
+            { path: '/sites/retriever', component: siteRetriever, name: 'siteRetriever'},
+            { path: '/sites', component: sitePicker, name: 'sitePicker'},
+            { path: '/sites/:siteName', component: sites, name: 'sites', props:true},
             { path: '/tariffs', component: tariffs},
             { path: '/alerts', component: alerts},
             { path: '/reports', component: reports,
