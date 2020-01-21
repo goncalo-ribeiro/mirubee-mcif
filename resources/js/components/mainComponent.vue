@@ -47,6 +47,9 @@
 
                         </li>
 
+                        <li class="nav-item" v-bind:class="{ active: activeTab == 'devices' }" v-on:click="activeTab = 'devices';activeSiteId = -1">
+                            <router-link class="nav-link" :to="{ name: 'devices', params: { sites: userSites}}">devices</router-link>
+                        </li>
                         <li class="nav-item" v-bind:class="{ active: activeTab == 'tariffs' }" v-on:click="activeTab = 'tariffs';activeSiteId = -1">
                             <router-link class="nav-link" to="/tariffs">tariffs</router-link>
                         </li>

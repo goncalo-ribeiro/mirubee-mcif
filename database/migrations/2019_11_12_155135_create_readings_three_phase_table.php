@@ -56,7 +56,7 @@ class CreateReadingsThreePhaseTable extends Migration
             $table->double('o3');
             $table->double('ot');
             $table->double('ps');
-            $table->enum('calc_day_week', ['monday', 'tuesday'. 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']);
+            $table->enum('calc_day_week', ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']);
             $table->integer('calc_day_month');
             $table->integer('calc_year');
             $table->integer('calc_month');

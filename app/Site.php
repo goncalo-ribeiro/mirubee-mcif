@@ -11,4 +11,9 @@ class Site extends Model
     {
         return $this->belongsTo('App\User');
     }
+
+    public function devices()
+    {
+        return $this->hasMany('App\Device');
+    }
 }

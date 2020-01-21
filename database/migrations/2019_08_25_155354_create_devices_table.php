@@ -17,7 +17,7 @@ class CreateDevicesTable extends Migration
             $table->bigIncrements('id');
             $table->timestamps();
 
-            $table->text('name');
+            $table->text('name')->nullable();
             $table->enum('type', ['single phase', 'three phase right', 'three phase left']);
             $table->macAddress('mac_address');
             $table->text('model');
@@ -27,7 +27,7 @@ class CreateDevicesTable extends Migration
         Schema::table('devices', function($table) {
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');;
-            $table->unsignedBigInteger('site_id');
+            $table->unsignedBigInteger('site_id')->nullable();
             $table->foreign('site_id')->references('id')->on('sites')->onDelete('cascade');;
         });        
 

@@ -42,6 +42,7 @@ const mainComponent = Vue.component('mainComponent', require('./components/mainC
 const sites = Vue.component('sites', require('./components/sites.vue').default);
 const siteRetriever = Vue.component('sites', require('./components/siteRetriever.vue').default);
 const sitePicker = Vue.component('sites', require('./components/sitePicker.vue').default);
+const devices = Vue.component('devices', require('./components/devices.vue').default);
 const tariffs = Vue.component('tariffs', require('./components/tariffs.vue').default);
 const alerts = Vue.component('alerts', require('./components/alerts.vue').default);
 const reports = Vue.component('reports', require('./components/reports.vue').default);
@@ -75,6 +76,7 @@ const routes = [
             { path: '/sites/retriever', component: siteRetriever, name: 'siteRetriever'},
             { path: '/sites', component: sitePicker, name: 'sitePicker'},
             { path: '/sites/:siteName', component: sites, name: 'sites', props:true},
+            { path: '/devices', component: devices, name:'devices', props:true},
             { path: '/tariffs', component: tariffs},
             { path: '/alerts', component: alerts},
             { path: '/reports', component: reports,

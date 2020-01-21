@@ -43,6 +43,11 @@ class User extends Authenticatable
         return $this->hasMany('App\Site');
     }
 
+    public function devices()
+    {
+        return $this->hasMany('App\Device');
+    }
+
     //o argumento $nickname devia ter outro nome, pois caso a função não encontre o utilizador com o nickname tenta faze-lo com email
     //devia ser chamado de $loginCredential
     /*

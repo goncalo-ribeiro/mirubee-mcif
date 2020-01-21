@@ -19,3 +19,13 @@
 }
 
 .toasted-container.top-right{top:7%!Important}
+
+//$default-color: #073642;
+$default-color: #495057;
+$primary-color: #B58900;
+$calendar-in-range-background-color: #dbd4bf;
+//$primary-color: #268BD2;
+
+
+//@import '~vue2-datepicker/scss/index.scss';
+@import 'datepicker/solarized-datepicker.scss';
