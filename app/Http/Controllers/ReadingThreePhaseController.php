@@ -6,7 +6,10 @@ use App\ReadingThreePhase;
 use App\Device;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Auth;
+
 use App\Http\Resources\ReadingThreePhase as ReadingThreePhaseResource;
+use App\Http\Resources\Device as DeviceResource;
 
 class ReadingThreePhaseController extends Controller
 {
@@ -41,6 +44,21 @@ class ReadingThreePhaseController extends Controller
      */
     public function store(Request $request)
     {
+        $deviceCreated = false;
+
+        if(is_null(Device::where('mac_address', $request->mac)->first())){
+            $device = new Device;
+            $device->type = 'three phase right';
+            $device->mac_address = $request->mac;
+            $device->model = $request->model;
+            $device->soft = $request->soft;
+            $device->user_id = Auth::user()->id;
+            $device->product_id = 2;
+
+            $device->save();
+            $deviceCreated = true;
+        }
+
         $reading = new ReadingThreePhase;
 
         $reading->ip = $request->ip;
@@ -90,23 +108,16 @@ class ReadingThreePhaseController extends Controller
         $reading->calc_month = date('m', $request->time);
         $reading->calc_hour = date('H', $request->time);
         $reading->calc_minute = date('i', $request->time);
-        
-        // $request->request->add(['calc_time' => 1]);
-        // $request->request->add(['calc_day_week' => strtolower(date('l', $request->time))]);
-        // $request->request->add(['calc_day_month' => date('j', $request->time)]);
-        // $request->request->add(['calc_year' => date('Y', $request->time)]);
-        // $request->request->add(['calc_month' => date('m', $request->time)]);
-        // $request->request->add(['calc_hour' => date('H', $request->time)]);
-        // $request->request->add(['calc_minute' => date('i', $request->time)]);
 
-        $device = Device::where('mac_address', '=', $request->mac)->first();
-    
+        if(!$deviceCreated){
+            $device = Device::where('mac_address', '=', $request->mac)->first();
+        }   
         $reading->device()->associate($device);
-        
         $reading->save();
 
         return response()->json(['message' => 'a new reading was created', 
-        'reading' => new ReadingThreePhaseResource($reading)], 
+        'reading' => new ReadingThreePhaseResource($reading),
+        'deviceCreated' => new DeviceResource($device)], 
         201);
     }
 

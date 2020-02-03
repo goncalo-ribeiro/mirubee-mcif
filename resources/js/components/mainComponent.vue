@@ -174,6 +174,7 @@
                     this.userSites.push(response.data.site)
                     this.$router.push({ name: 'sites', params: { siteId: response.data.site.id, siteName: response.data.site.name, siteLocation: response.data.site.location}})
                     this.activeSiteId = response.data.site.id;
+                    this.activeTab = 'sites'
                 })
                 .catch(error => {
                     console.log(error.response);

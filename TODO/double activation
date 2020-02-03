@@ -1,0 +1,6 @@
+o activated apanha quando o component é muda de tab 
+
+
+                Muda de component       Mounted()       Muda de site
+activated               x                   x
+watch                  + -                                   x

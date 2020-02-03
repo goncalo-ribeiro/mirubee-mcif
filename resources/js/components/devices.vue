@@ -35,8 +35,8 @@
                                         <td>{{device.name}}</td>
                                         <td>{{device.type}}</td>
                                         <td>
-                                            <button type="button" class="btn btn-primary btn-sm">more details</button>
-                                            <button type="button" data-toggle="modal" data-target="#update-device-modal" v-on:click="setTempDevice(device)" class="btn btn-primary btn-sm">edit</button>
+                                            <button type="button" data-toggle="modal" data-target="#view-device-modal" v-on:click="setTempDevice(device)" class="btn btn-primary btn-sm">more details <i class="material-icons" style="padding-left:4px; vertical-align: middle; font-size:16px;">search</i></button>
+                                            <button type="button" data-toggle="modal" data-target="#update-device-modal" v-on:click="setTempDevice(device)" class="btn btn-primary btn-sm">edit <i class="material-icons" style="padding-left:4px; vertical-align: middle; font-size:16px;">edit</i></button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -80,6 +80,61 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="view-device-modal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog  modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 v-if="selectedProduct == null" class="modal-title" >view device's details<i class="material-icons" style="padding-left:5px; vertical-align: middle;">search</i></h5>
+                        <h5 v-else class="modal-title" >{{selectedProduct.type}}<i class="material-icons" style="padding-left:5px; vertical-align: middle;">search</i></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <div v-if="selectedProduct != null">
+                            <div class="form-row">
+                                <div class="form-group col-md-9">
+                                    <h5 class="mb-3">{{selectedProduct.desc}}</h5>
+                                    <div class="form-row mt-2">
+                                        <div class="form-group col-md-6">
+                                            <p class="mb-0">device's name:</p>
+                                            <h5>{{tempDevice.name}}</h5>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <p class="mb-0">device's mac address:</p>
+                                            <h5>{{tempDevice.mac_address}}</h5>
+                                        </div>
+                                    </div>
+                                    <div class="form-row mt-2">
+                                        <div class="form-group col-md-6">
+                                            <p class="mb-0">device's software:</p>
+                                            <h5>{{tempDevice.soft}}</h5>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <p class="mb-0">device's site:</p>
+                                            <h5>{{tempDevice.site.name}}</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <img style="border-radius: 50%; width: 100%" :src="selectedProduct.image" alt="product-image">
+                                </div>
+                            </div>
+                            
+
+                        </div>
+<!--
+                        <img style="border-radius: 50%;" :src="selectedProduct.image" alt="product-image">
+-->
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">close</button>
+                    </div>
+                </div>
+            </div>
+        </div>        
 <!--
     -->
     </div>
@@ -92,6 +147,7 @@ export default {
             console.log('Component mounted.')
             console.log(this.devices.length)
             this.getDevices();
+            this.getProducts();
 
             $('#update-site-modal').on('shown.bs.modal', () => {
                 $('#update-device-name').focus();
@@ -101,11 +157,23 @@ export default {
             return {
                 devices: [],
                 tempDevice: {name: "", site: {id: 0}},
+
+                products: [],
             }
         },
         props: {
             sites: {
                 type: Array,
+            },
+        },
+        computed:{
+            selectedProduct: function(){
+                if(this.tempDevice.site.id == 0){
+                    return null;
+                }else{
+                    let index = this.products.findIndex( product => product.id === this.tempDevice.product_id)
+                    return this.products[index];
+                }
             },
         },
         methods:{
@@ -119,10 +187,19 @@ export default {
                     Vue.toasted.show('error ' + error.response.status + ": " + error.response.data.message + " (user's device retrieval)", { icon : 'cancel', type: 'error'});
                 })    
             },
+            getProducts(){
+                axios.get(myUrl+"/api/products")
+                .then(response =>{
+                    this.products = response.data.data;
+                })
+                .catch(error =>{
+                    console.log(error);
+                    Vue.toasted.show('error ' + error.response.status + ": " + error.response.data.message + " (user's device retrieval)", { icon : 'cancel', type: 'error'});
+                })
+            },
             updateDevice(){
                 axios.put(myUrl+"/api/devices/"+this.tempDevice.id, { name: this.tempDevice.name, id: this.tempDevice.id, site: this.tempDevice.site})
                 .then( response => {
-                    console.log(response);
                     $('#update-device-modal').modal('hide')
                     Vue.toasted.show('Device update', { icon : 'check', type: 'success'});
 
@@ -143,7 +220,6 @@ export default {
                             Vue.toasted.show(err, { icon : 'cancel', type: 'error'})
                         );
                     }
-
                 })
             },
             setTempDevice(device){
@@ -151,6 +227,9 @@ export default {
                 this.tempDevice.name =  device.name;
                 this.tempDevice.site.id = device.site.id;
                 this.tempDevice.site.name = device.site.name;
+                this.tempDevice.product_id = device.product_id;
+                this.tempDevice.mac_address = device.mac_address;
+                this.tempDevice.soft = device.soft;
             }
         }
     }

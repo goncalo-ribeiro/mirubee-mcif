@@ -19,16 +19,18 @@ class CreateDevicesTable extends Migration
 
             $table->text('name')->nullable();
             $table->enum('type', ['single phase', 'three phase right', 'three phase left']);
-            $table->macAddress('mac_address');
+            $table->macAddress('mac_address')->unique();
             $table->text('model');
             $table->text('soft');
         });
 
         Schema::table('devices', function($table) {
             $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');;
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('site_id')->nullable();
-            $table->foreign('site_id')->references('id')->on('sites')->onDelete('cascade');;
+            $table->foreign('site_id')->references('id')->on('sites')->onDelete('cascade');
+            $table->unsignedBigInteger('product_id')->nullable();
+            $table->foreign('product_id')->references('id')->on('products');
         });        
 
     }

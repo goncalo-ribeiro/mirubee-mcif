@@ -39,6 +39,7 @@
                                         </select>
                                     </div>
                                 </div>
+                                <!--
                                 <div v-show="readings.length == 0" class="row justify-content-center">
                                     <div class="col-md-8" style="text-align: center;vertical-align: middle;">
                                         <h4>
@@ -49,17 +50,30 @@
                                         </h1>
                                     </div>
                                 </div>
-                                <div v-show="readings.length != 0">
+                                    -->
+                                
                                 <div id="echart" style="height:60vh" class="m-a">
                                 </div>
-                                    <div>
-                                        <input type="checkbox" id="smooth-checkbox" v-model="smooth" @change="setupEchartGraph">
-                                        <label for="smooth-checkbox">smooth = {{smooth}}</label>
+                                <div>
 
-                                        <input class="ml-5" type="checkbox" id="timestampsRepetidos-checkbox" v-model="timestampsRepetidos" @change="refresh">
-                                        <label for="timestampsRepetidos-checkbox">timestampsRepetidos = {{timestampsRepetidos}}</label>
-                                    </div>
+                                    <!--
+                                    <input type="checkbox" id="smooth-checkbox" v-model="smooth" @change="setupEchartGraph">
+                                    <label for="smooth-checkbox">smooth = {{smooth}}</label>
+                                    -->
+                                        <label class="ml-5" for="serie1-checkbox">
+                                            <input class="form-check-input" type="checkbox" id="serie1-checkbox" v-model="serie1Checkbox" @change="refreshEchartSeries">
+                                                <span :style="'display:inline-block;margin-left:3px;margin-right:3px;border-radius:10px;width:9px;height:9px;background-color:' + colors[0] "></span> phase 1
+                                        </label>
+                                        <label class="ml-5" for="serie2-checkbox">
+                                            <input class="form-check-input" type="checkbox" id="serie2-checkbox" v-model="serie2Checkbox" @change="refreshEchartSeries">
+                                                <span :style="'display:inline-block;margin-left:3px;margin-right:3px;border-radius:10px;width:9px;height:9px;background-color:' + colors[1] "></span> phase 2
+                                        </label>
+                                        <label class="ml-5" for="serie3-checkbox">
+                                            <input class="form-check-input" type="checkbox" id="serie3-checkbox" v-model="serie3Checkbox" @change="refreshEchartSeries">
+                                                <span :style="'display:inline-block;margin-left:3px;margin-right:3px;border-radius:10px;width:9px;height:9px;background-color:' + colors[2] "></span> phase 3
+                                        </label>
                                 </div>
+                                
                             </div>
                         </div>
                     </div>
@@ -120,10 +134,11 @@ export default {
             $('#update-site-modal').on('shown.bs.modal', () => {
                 $('#update-site-name').focus();
             }); 
-            this.setup()
+            //this.setup()
         },
         activated(){
             console.log('Component activated.');
+            console.log(' * * * * * setup activated * * * * * *');
             this.setup(); 
         },
         data: function(){
@@ -137,6 +152,8 @@ export default {
                 smooth: false,
                 timestampsRepetidos: true,
 
+                eChart: undefined,
+
                 devices: [],
                 selectedDevice: 0,
 
@@ -145,13 +162,24 @@ export default {
                 selectedUnit: 0,
 
                 readings: [],
-                serie1: undefined,
-                serie2: undefined,
+                serie1: [],
+                serie2: [],
+                serie3: [],
+
                 yMax: Number.NEGATIVE_INFINITY,
                 yMin: Number.POSITIVE_INFINITY,
 
                 yMax2: Number.NEGATIVE_INFINITY,
                 yMin2: Number.POSITIVE_INFINITY,
+
+                yMax3: Number.NEGATIVE_INFINITY,
+                yMin3: Number.POSITIVE_INFINITY,
+
+                serie1Checkbox: true,
+                serie2Checkbox: false,
+                serie3Checkbox: false,
+
+                colors:['rgb(255, 70, 131)', 'rgb(70, 255, 131)', 'rgb(70, 131, 255)'],
                 
                 datesPicked: undefined,
             }
@@ -169,10 +197,11 @@ export default {
         },
         watch: { 
             siteId: function(newVal, oldVal) { // watch it
+                console.log(' * * * * * setup watcher * * * * * *');
                 this.setup();
             },
             selectedDevice: function(newVal, oldVal) { // watch it
-                this.getReadings();
+                //this.getReadings();
             },
         },
         methods:{
@@ -220,6 +249,7 @@ export default {
                 })
             },
             setup(){
+                console.log(' * * * * * setup * * * * * *');
                 this.getSiteDevices();
                 this.setDayOnPicker();
             },
@@ -251,6 +281,7 @@ export default {
             getReadings(){
                 console.log('getReadings')
                 console.log('selectedDevice', this.selectedDevice)
+
                 if(this.selectedDevice == 0){
                     console.log('this.selectedDevice == 0')
                     this.errorMessageIndex = 0;
@@ -276,32 +307,31 @@ export default {
                 
                     this.serie1 = [];
                     this.serie2 = [];
+                    this.serie3 = [];
 
                     let lastTime = 0;
 
                     this.readings.forEach(reading => {
                         if(lastTime + 30 < reading.time){
-
-                            if (this.yMax < reading.v1) this.yMax = reading.v1;
-
-                            if (this.yMin > reading.v1) this.yMin = reading.v1;
                             
                             let auxDate = new Date(reading.time*1000);
-                            let Reading = reading.v1;
-                            
-                            let random;
-                            if (this.yMin == Number.POSITIVE_INFINITY){
-                                random = reading.v1
-                            }
-                            else{
-                                random = Math.floor(Math.random() * (this.yMax - this.yMin)) + this.yMin;
-                            }
-                            let Reading2 = reading.v1 + 2 ;
+                            let Reading1 = reading.v1;
+                            let Reading2 = reading.v1 + 2;
+                            let Reading3 = reading.v1 - 1;
 
-                            //let Reading2;
+
+                            if (this.yMax < Reading1) this.yMax = Reading1;
+                            if (this.yMax2 < Reading2) this.yMax2 = Reading2;
+                            if (this.yMax3 < Reading3) this.yMax3 = Reading3;
+
+                            if (this.yMin > Reading1) this.yMin = Reading1;
+                            if (this.yMin2 > Reading2) this.yMin2 = Reading2;
+                            if (this.yMin3 > Reading3) this.yMin3 = Reading3;
                                                     
-                            this.serie1.push( [auxDate.toJSON(), Reading] );
+                            this.serie1.push( [auxDate.toJSON(), Reading1] );
                             this.serie2.push( [auxDate.toJSON(), Reading2] );
+                            this.serie3.push( [auxDate.toJSON(), Reading3] );
+
                             lastTime = reading.time;
                         }
                     });
@@ -310,56 +340,49 @@ export default {
                 });
             },
 
-            refresh(){
-                this.yAxisData = [];
-                this.xAxisData = [];
-                this.newData = [];
-                this.serie1 = [];
-                this.test = [
-                    ["2018-08-15T10:04:01.339Z",1],[ "2018-08-15T10:14:13.914Z",2],[ "2018-08-15T10:40:03.147Z",3],[ "2018-08-15T11:50:14.335Z",4]
-                ];
-                let timestamps = [];
-
-                this.readings.forEach(reading => {
-                    if(!timestamps.includes(reading.time)){
-                        this.yAxisData.push(reading.v1)
-
-                        if (this.yMax < reading.v1) this.yMax = reading.v1;
-
-                        if (this.yMin > reading.v1) this.yMin = reading.v1;
-                        
-                        let auxDate = new Date(reading.time*1000);
-                        let auxVolt = reading.v1;
-                        
-                        this.xAxisData.push([auxDate.getHours(), auxDate.getMinutes(), auxDate.getSeconds()].join(':'))
-
-                        let newElement = {
-                            name: auxDate.toString(),
-                            value: [
-                                [auxDate.getFullYear(), auxDate.getMonth() + 1, auxDate.getDate()].join('/'),
-                                auxVolt
-                            ]
-                        }
-                        this.newData.push(newElement);
-                        
-                        this.serie1.push( [auxDate.toJSON(), auxVolt] );
-                        if(!this.timestampsRepetidos){
-                            timestamps.push(reading.time);
-                        } 
-                    }
-                });
-                
-                this.setupEchartGraph();
-            },
-
             setupEchartGraph(){
                 var dom = document.getElementById("echart");
-                var myChart = echarts.init(dom);
+                this.eChart = echarts.init(dom);
 
-                let gap = Math.ceil((this.yMax - this.yMin) * .10);
-                console.log(gap)
+                this.refreshEchartSeries();
+            },
 
-                var options = {
+            refreshEchartSeries(){
+                this.eChart.setOption(this.optionsBuilder(), true);
+            },
+
+            optionsBuilder(){
+
+                let maxArray = [];
+                let minArray = [];
+                if (this.serie1Checkbox){
+                    maxArray.push(this.yMax);
+                    minArray.push(this.yMin);
+                }
+                if (this.serie2Checkbox){
+                    maxArray.push(this.yMax2);
+                    minArray.push(this.yMin2);
+                }
+                if (this.serie3Checkbox){
+                    maxArray.push(this.yMax3);
+                    minArray.push(this.yMin3);
+                }
+
+                console.log(maxArray, minArray)
+
+                let max = maxArray.reduce(function(a, b) {
+                    return Math.max(a, b);
+                });
+                let min = minArray.reduce(function(a, b) {
+                    return Math.min(a, b);
+                });
+
+
+                let gap = Math.ceil((max - min) * .10);
+
+                console.log(max, min, gap)
+
+                return {
                     tooltip: {
                         trigger: 'axis',
                         position: function (pt) {
@@ -382,7 +405,7 @@ export default {
                     },
                     title: {
                         left: 'center',
-                        text: 'voltage values',
+                        text: this.units[this.selectedUnit] + ' values',
                         textStyle:{
                             color: "#fff",
                             fontFamily: 'Source Sans Pro',
@@ -445,8 +468,8 @@ export default {
                     yAxis: {
                         type: 'value',
                         boundaryGap: [0, '100%'],
-                        min: Math.round(this.yMin - gap),
-                        max: Math.round(this.yMax + gap),
+                        min: Math.round(min - gap),
+                        max: Math.round(max + gap),
                         axisLabel:{
                             color: "#839496",
                             fontFamily: 'Source Sans Pro',
@@ -500,51 +523,54 @@ export default {
                             },
                         },
                     ],
-                    series: [
-                        {
-                            name:'voltagem 1',
-                            type:'line',
-                            smooth:this.smooth,
-                            symbol: 'none',
-                            sampling: 'average',
-                            itemStyle: {
-                                color: 'rgb(255, 70, 131)'
-                            },/*
-                            areaStyle: {
-                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                                    offset: 0,
-                                    color: 'rgb(255, 158, 68)'
-                                }, {
-                                    offset: 1,
-                                    color: 'rgb(255, 70, 131)'
-                                }])
-                            },*/
-                            data: this.serie1,
-                        },
-                        {
-                            name:'voltagem 2',
-                            type:'line',
-                            smooth:this.smooth,
-                            symbol: 'none',
-                            sampling: 'average',
-                            itemStyle: {
-                                color: 'rgb(70, 255, 131)'
-                            },/*
-                            areaStyle: {
-                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                                    offset: 0,
-                                    color: 'rgb(70, 255, 68)'
-                                }, {
-                                    offset: 1,
-                                    color: 'rgb(158, 255, 131)'
-                                }])
-                            },*/
-                            data: this.serie2,
-                        }
-                    ]
+                    series: this.seriesBuilder()
                 }
-                myChart.setOption(options, true);
-            }
+            },
+
+            seriesBuilder(){
+
+                let series = [];
+                if(this.serie1Checkbox){
+                    series.push({
+                        name: this.units[this.selectedUnit] + ' 1',
+                        type:'line',
+                        smooth:this.smooth,
+                        symbol: 'none',
+                        sampling: 'average',
+                        itemStyle: {
+                            color: this.colors[1]
+                        },
+                        data: this.serie1,
+                    })
+                }
+                if(this.serie2Checkbox){
+                    series.push({
+                        name: this.units[this.selectedUnit] + ' 2',
+                        type:'line',
+                        smooth:this.smooth,
+                        symbol: 'none',
+                        sampling: 'average',
+                        itemStyle: {
+                            color: this.colors[2]
+                        },
+                        data: this.serie2,
+                    })
+                }
+                if(this.serie3Checkbox){
+                    series.push({
+                        name: this.units[this.selectedUnit] + ' 3',
+                        type:'line',
+                        smooth:this.smooth,
+                        symbol: 'none',
+                        sampling: 'average',
+                        itemStyle: {
+                            color: this.colors[3]
+                        },
+                        data: this.serie3,
+                    })
+                }
+                return series;
+            },
         }
     }
 </script>

@@ -37,27 +37,6 @@ class UsersTableSeeder extends Seeder
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),
         ];
-
-
-        /*
-        static $password;
-        $createdAt = Carbon\Carbon::now()->subDays(30);
-        $updatedAt = $faker->dateTimeBetween($createdAt);
-        $nickname = $admin ? 'admin' : $faker->unique()->userName;
-        $email = $admin ? 'admin@iot.ipl' : $faker->unique()->safeEmail;
-        $pathToPic = $faker->randomElement([null, $faker->image(storage_path('app/'.$this->photoPath), 180, 180, 'people', false)]);
-        $pathToPic = ($pathToPic == NULL ? 'storage/profiles/default.jpg' : 'storage/profiles/'.$pathToPic);
-        return [
-            'name' => $faker->name,
-            'email' => $email,
-            'admin' => $admin,
-            'password' => $password ?: $password = bcrypt('secret'),
-            'avatar' => $pathToPic,
-            'active' => 1,
-            'created_at' => $createdAt,
-            'updated_at' => $updatedAt,
-            'remember_token' => str_random(10),
-        ];*/
     }
 
     private function staticUser (){

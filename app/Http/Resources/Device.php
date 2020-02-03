@@ -24,6 +24,7 @@ class Device extends JsonResource
             'user' => $this->user->name,
             'site' => ['name' => is_null($this->site) ? null : $this->site->name,
                 'id' => is_null($this->site) ? -1 : $this->site->id],
+            'product_id' => $this->product_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

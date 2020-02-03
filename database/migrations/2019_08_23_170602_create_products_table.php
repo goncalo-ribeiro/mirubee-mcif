@@ -18,7 +18,7 @@ class CreateProductsTable extends Migration
             $table->timestamps();
             $table->enum('type', ['mirubee single phase', 'mirubee three phase']);
             $table->text('desc');
-            $table->binary('image');
+            $table->text('image');
         });
     }
 
