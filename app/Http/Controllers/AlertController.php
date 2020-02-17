@@ -4,6 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Alert;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+use App\Http\Resources\Alert as AlertResource;
+
+use App\Http\Requests\Alert as AlertRequest;
 
 class AlertController extends Controller
 {
@@ -14,7 +19,9 @@ class AlertController extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+
+        return AlertResource::collection($user->alerts);
     }
 
     /**
@@ -33,9 +40,17 @@ class AlertController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(AlertRequest $request)
     {
-        //
+        $alert = new Alert;
+
+        $request->validated();
+        
+        $alert->user()->associate(Auth::user());
+        $alert->fill($request->all());
+        $alert->save();
+
+        return response()->json(['message' => 'a new alert was created', 'alert' => new AlertResource($alert)], 201);
     }
 
     /**
@@ -67,9 +82,25 @@ class AlertController extends Controller
      * @param  \App\Alert  $alert
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Alert $alert)
+    public function update(AlertRequest $request, Alert $alert)
     {
-        //
+        $alert = Alert::where('id', $request->id)->first();
+        $user = Auth::user();
+
+        if (is_null($alert)){
+            return response()->json(['errors' => ['id' => ["No alert was found"]]], 400);
+        }
+        if ($user->id != $alert->user->id){
+            $temp = (object) ['user' => ["This site doesn't belong to the user"]];
+            return response()->json(['errors' => $temp], 400);
+        }
+
+        $request->validated();
+        $alert->fill($request->all());
+        $alert->save();
+
+        return response()->json(['message' => 'the alert was successfully updated', 'alert' => new AlertResource($alert)], 201);
+
     }
 
     /**
@@ -78,8 +109,18 @@ class AlertController extends Controller
      * @param  \App\Alert  $alert
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Alert $alert)
+    public function destroy($alertId)
     {
-        //
+        $alert = Alert::where('id', $alertId)->first();
+        $user = Auth::user();
+
+        if (is_null($alert)){
+            return response()->json(['errors' => ['id' => ["No alert was found"]]], 400);
+        }
+        if ($user->id != $alert->user->id){
+            return response()->json(['errors' => ['user' => ["This alert doesn't belong to the user"]]], 400);
+        }
+        Alert::destroy($alertId);
+        return response()->json(['message' => 'the selected alert was deleted', 'alert' => new AlertResource($alert), 'id' =>$alertId], 200);
     }
 }

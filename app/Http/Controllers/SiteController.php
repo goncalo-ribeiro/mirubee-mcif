@@ -5,12 +5,16 @@ namespace App\Http\Controllers;
 use App\Site;
 use App\ReadingThreePhase;
 use App\Device;
+use App\Tariff;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
 
+use App\Http\Requests\Tariff as TariffRequest;
+
 use App\Http\Resources\Site as SiteResource;
 use App\Http\Resources\Device as DeviceResource;
+use App\Http\Resources\Tariff as TariffResource;
 
 class SiteController extends Controller
 {
@@ -169,4 +173,72 @@ class SiteController extends Controller
         $devices = $site->devices;
         return response()->json(['message' => 'user devices successfully retrieved', 'devices' => $devices], 200);
     }    
+
+    public function setTariff(TariffRequest $request, $siteId){
+        $user = Auth::user();
+        $site = Site::where('id', $siteId)->first();
+
+        if($site->user->id != $user->id){
+            return response()->json(['errors' => ['user' => ["this site doesn't belong to the user"]]], 400);
+        }
+
+        if(!is_null($site->tariff)){
+            return response()->json(['errors' => ['site' => ["this site already has a tariff associated"]]], 400);
+        }
+
+        $tariff = new Tariff;
+
+        $request->validated();
+
+        $tariff->fill($request->all());
+
+        $tariff->save();
+
+        $site->tariff()->associate($tariff);
+        $site->save();
+
+        return response()->json(['message' => 'tariff set up successfully', 'tariff' => new TariffResource($tariff)], 200);
+    }
+
+    public function updateTariff(TariffRequest $request, $siteId){
+        $user = Auth::user();
+        $site = Site::where('id', $siteId)->first();
+
+        if($site->user->id != $user->id){
+            return response()->json(['errors' => ['user' => ["this site doesn't belong to the user"]]], 400);
+        }
+
+        $tariff = new Tariff;
+
+        $request->validated();
+
+        $tariff->fill($request->all());
+
+        $tariff->save();
+
+        $site->tariff()->associate($tariff);
+        $site->save();
+
+        return response()->json(['message' => 'tariff updated successfully', 'tariff' => new TariffResource($tariff)], 200);
+    }
+    
+
+    public function deleteTariff($siteId){
+        $user = Auth::user();
+        $site = Site::where('id', $siteId)->first();
+
+        if($site->user->id != $user->id){
+            return response()->json(['errors' => ['user' => ["this site doesn't belong to the user"]]], 400);
+        }
+
+        $tariff = $site->tariff;
+
+        if(is_null($tariff)){
+            return response()->json(['errors' => ['site' => ["this site doesn't have an associated tariff"]]], 400);
+        }
+
+        $tariff->delete();
+
+        return response()->json(['message' => 'tariff erased successfully', 'site' => new SiteResource($site)], 200);
+    }
 }

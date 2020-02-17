@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Tariff as TariffResource;
 
 class Site extends JsonResource
 {
@@ -21,6 +22,7 @@ class Site extends JsonResource
             'location' => $this->location,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'tariff' => is_null($this->tariff) ? null : new TariffResource($this->tariff),
         ];
     }
 }

@@ -16,4 +16,9 @@ class Site extends Model
     {
         return $this->hasMany('App\Device');
     }
+
+    public function tariff()
+    {
+        return $this->belongsTo('App\Tariff');
+    }
 }

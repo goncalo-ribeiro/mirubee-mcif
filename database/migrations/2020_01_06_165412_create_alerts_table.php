@@ -18,10 +18,13 @@ class CreateAlertsTable extends Migration
             $table->timestamps();
 
             $table->unsignedBigInteger('user_id'); 
-            $table->text('title');
-            $table->text('metric');                    //  [note: "define o qual o campo da tabela readings a parametrizar"]
-            $table->text('threshold');                 //  [note: "define o valor numérico a partir do qual é despoletado o alerta"]
-            $table->text('type');                      //  [note: "define o tipo de alerta (email, sms, website, etc.)"]
+            $table->text('name');
+            $table->enum('unit', ['voltage', 'current', 'apparent power', 'active power',  'frequency', 'power factor']); //  [note: "define o qual o campo da tabela readings a parametrizar"]
+            $table->double('threshold');                   //  [note: "define o valor numérico a partir do qual é despoletado o alerta"]
+            $table->double('threshold2')->nullable();      //  [note: "define o valor numérico a partir do qual é despoletado o alerta"]
+            $table->enum('type', ['email', 'website']);    //  [note: "define o tipo de alerta (email, sms, website, etc.)"]
+
+            $table->enum('condition', ['bigger than', 'lesser than', 'between', 'equal']);
         });
 
 

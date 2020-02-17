@@ -34,8 +34,8 @@
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label for="parameter">unit</label>
-                                        <select class="form-control" v-model="selectedUnit" v-on:input="getReadings()">
-                                            <option v-for="(unit, index) in units" :key="index" :value="index">{{unit}}</option>
+                                        <select class="form-control" v-on:input="selectedUnit = $event.target.value; setupSeriesandDrawGraph()">
+                                            <option v-for="(unit, index) in units" :key="index" :value="index">{{unit.name}}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -55,23 +55,21 @@
                                 <div id="echart" style="height:60vh" class="m-a">
                                 </div>
                                 <div>
-
-                                    <!--
-                                    <input type="checkbox" id="smooth-checkbox" v-model="smooth" @change="setupEchartGraph">
-                                    <label for="smooth-checkbox">smooth = {{smooth}}</label>
-                                    -->
-                                        <label class="ml-5" for="serie1-checkbox">
-                                            <input class="form-check-input" type="checkbox" id="serie1-checkbox" v-model="serie1Checkbox" @change="refreshEchartSeries">
-                                                <span :style="'display:inline-block;margin-left:3px;margin-right:3px;border-radius:10px;width:9px;height:9px;background-color:' + colors[0] "></span> phase 1
-                                        </label>
-                                        <label class="ml-5" for="serie2-checkbox">
-                                            <input class="form-check-input" type="checkbox" id="serie2-checkbox" v-model="serie2Checkbox" @change="refreshEchartSeries">
-                                                <span :style="'display:inline-block;margin-left:3px;margin-right:3px;border-radius:10px;width:9px;height:9px;background-color:' + colors[1] "></span> phase 2
-                                        </label>
-                                        <label class="ml-5" for="serie3-checkbox">
-                                            <input class="form-check-input" type="checkbox" id="serie3-checkbox" v-model="serie3Checkbox" @change="refreshEchartSeries">
-                                                <span :style="'display:inline-block;margin-left:3px;margin-right:3px;border-radius:10px;width:9px;height:9px;background-color:' + colors[2] "></span> phase 3
-                                        </label>
+                                    <label class="ml-5" for="serie1-checkbox">
+                                        <input class="form-check-input" type="checkbox" id="serie1-checkbox" v-model="serie1Checkbox" @change="refreshEchartSeries($event)"
+                                        >
+                                            <span :style="'display:inline-block;margin-left:3px;margin-right:3px;border-radius:10px;width:9px;height:9px;background-color:' + colors[0] "></span> phase 1
+                                    </label>
+                                    <label class="ml-5" for="serie2-checkbox">
+                                        <input class="form-check-input" type="checkbox" id="serie2-checkbox" v-model="serie2Checkbox" @change="refreshEchartSeries($event)"
+                                        >
+                                            <span :style="'display:inline-block;margin-left:3px;margin-right:3px;border-radius:10px;width:9px;height:9px;background-color:' + colors[1] "></span> phase 2
+                                    </label>
+                                    <label class="ml-5" for="serie3-checkbox">
+                                        <input class="form-check-input" type="checkbox" id="serie3-checkbox" v-model="serie3Checkbox" @change="refreshEchartSeries($event)"
+                                        >
+                                            <span :style="'display:inline-block;margin-left:3px;margin-right:3px;border-radius:10px;width:9px;height:9px;background-color:' + colors[2] "></span> phase 3
+                                    </label>
                                 </div>
                                 
                             </div>
@@ -133,8 +131,8 @@ export default {
             });
             $('#update-site-modal').on('shown.bs.modal', () => {
                 $('#update-site-name').focus();
-            }); 
-            //this.setup()
+            });
+            this.setupEchartGraph();
         },
         activated(){
             console.log('Component activated.');
@@ -157,8 +155,27 @@ export default {
                 devices: [],
                 selectedDevice: 0,
 
-                units: ['voltage', 'intensity', 'apparent power', 'active power', 'inductive reactive power', 'capacitive reactive power', 'frequency',
-                'power factor', 'Harmonics A', 'Harmonics V', 'CO2', 'Active Energy', 'Reactive Energy'],
+                //deprecated
+                /*units: ['voltage', 'current', 'apparent power', 'active power', 'inductive reactive power', 'capacitive reactive power', 'frequency',
+                'power factor', 'Harmonics A', 'Harmonics V', 'CO2', 'Active Energy', 'Reactive Energy'],*/
+                //deprecated
+                unitsDBName: ['v','i','p','a','r','q','f','e','o','ps'],
+
+                units: [
+                {name:'voltage', nameDB:'v'},
+                {name:'current', nameDB:'i'},
+                {name:'apparent power', nameDB:'p'},
+                {name:'active power', nameDB:'a'},
+                {name:'inductive reactive power', nameDB:'v'},      //?
+                {name:'capacitive reactive power', nameDB:'v'},     //?
+                {name:'frequency', nameDB:'q'},
+                {name:'power factor', nameDB:'f'},
+                {name:'Harmonics A', nameDB:'v'},                   //?
+                {name:'Harmonics V', nameDB:'v'},                   //?
+                {name:'CO2', nameDB:'v'},                           //?
+                {name:'Active Energy', nameDB:'v'},                 //?
+                {name:'Reactive Energy', nameDB:'v'}],              //?
+
                 selectedUnit: 0,
 
                 readings: [],
@@ -250,6 +267,9 @@ export default {
             },
             setup(){
                 console.log(' * * * * * setup * * * * * *');
+                if(this.eChart){
+                    this.clear();
+                }
                 this.getSiteDevices();
                 this.setDayOnPicker();
             },
@@ -304,51 +324,92 @@ export default {
                         this.errorMessageIndex = 1;
                         return;
                     }
-                
-                    this.serie1 = [];
-                    this.serie2 = [];
-                    this.serie3 = [];
-
-                    let lastTime = 0;
-
-                    this.readings.forEach(reading => {
-                        if(lastTime + 30 < reading.time){
-                            
-                            let auxDate = new Date(reading.time*1000);
-                            let Reading1 = reading.v1;
-                            let Reading2 = reading.v1 + 2;
-                            let Reading3 = reading.v1 - 1;
-
-
-                            if (this.yMax < Reading1) this.yMax = Reading1;
-                            if (this.yMax2 < Reading2) this.yMax2 = Reading2;
-                            if (this.yMax3 < Reading3) this.yMax3 = Reading3;
-
-                            if (this.yMin > Reading1) this.yMin = Reading1;
-                            if (this.yMin2 > Reading2) this.yMin2 = Reading2;
-                            if (this.yMin3 > Reading3) this.yMin3 = Reading3;
-                                                    
-                            this.serie1.push( [auxDate.toJSON(), Reading1] );
-                            this.serie2.push( [auxDate.toJSON(), Reading2] );
-                            this.serie3.push( [auxDate.toJSON(), Reading3] );
-
-                            lastTime = reading.time;
-                        }
-                    });
                     
-                   this.setupEchartGraph();
+                    this.setupSeriesandDrawGraph();
+                    
                 });
+            },
+
+            setupSeriesandDrawGraph(){
+                                
+                this.serie1 = [];
+                this.serie2 = [];
+                this.serie3 = [];
+
+                this.yMax = Number.NEGATIVE_INFINITY;
+                this.yMax2 = Number.NEGATIVE_INFINITY;
+                this.yMax3 = Number.NEGATIVE_INFINITY;
+
+                this.yMin = Number.POSITIVE_INFINITY;
+                this.yMin2 = Number.POSITIVE_INFINITY;
+                this.yMin3 = Number.POSITIVE_INFINITY;
+
+
+                console.log('selectedUnit', this.selectedUnit);
+                let unit = this.units[this.selectedUnit].nameDB;
+                let lastTime = 0;
+                
+                console.log('unit', unit)
+
+                this.readings.forEach(reading => {
+                    if(lastTime + 30 < reading.time){
+                        
+                        let auxDate = new Date(reading.time*1000);
+                        let Reading1 = reading[unit + '1'];
+                        let Reading2 = reading[unit + '2'];
+                        let Reading3 = reading[unit + '3'];
+
+
+                        if (this.yMax < Reading1) this.yMax = Reading1;
+                        if (this.yMax2 < Reading2) this.yMax2 = Reading2;
+                        if (this.yMax3 < Reading3) this.yMax3 = Reading3;
+
+                        if (this.yMin > Reading1) this.yMin = Reading1;
+                        if (this.yMin2 > Reading2) this.yMin2 = Reading2;
+                        if (this.yMin3 > Reading3) this.yMin3 = Reading3;
+                                                
+                        this.serie1.push( [auxDate.toJSON(), Reading1] );
+                        this.serie2.push( [auxDate.toJSON(), Reading2] );
+                        this.serie3.push( [auxDate.toJSON(), Reading3] );
+
+                        lastTime = reading.time;
+                    }
+                })
+
+                this.refreshEchartSeries();
             },
 
             setupEchartGraph(){
                 var dom = document.getElementById("echart");
                 this.eChart = echarts.init(dom);
-
-                this.refreshEchartSeries();
+                console.log('creating echarts dom')
             },
 
-            refreshEchartSeries(){
-                this.eChart.setOption(this.optionsBuilder(), true);
+            refreshEchartSeries(event = null){
+                
+                if(this.serie1Checkbox || this.serie2Checkbox || this.serie3Checkbox){
+                    if(this.eChart != null){
+                        console.log('**** drawing chart ****')
+                        this.eChart.setOption(this.optionsBuilder(), true);
+                    }
+                }else{
+                    if(event != null){
+                        switch(event.target.id) {
+                            case 'serie1-checkbox':
+                                $('#' + event.target.id).prop('checked', true);
+                                this.serie1Checkbox = true;
+                                break;
+                            case 'serie2-checkbox':
+                                $('#' + event.target.id).prop('checked', true);
+                                this.serie2Checkbox = true;
+                                break;
+                            case 'serie3-checkbox':
+                                $('#' + event.target.id).prop('checked', true);
+                                this.serie3Checkbox = true;
+                                break;
+                        }                          
+                    }
+                }
             },
 
             optionsBuilder(){
@@ -405,7 +466,7 @@ export default {
                     },
                     title: {
                         left: 'center',
-                        text: this.units[this.selectedUnit] + ' values',
+                        text: this.units[this.selectedUnit].name + ' values',
                         textStyle:{
                             color: "#fff",
                             fontFamily: 'Source Sans Pro',
@@ -532,7 +593,20 @@ export default {
                 let series = [];
                 if(this.serie1Checkbox){
                     series.push({
-                        name: this.units[this.selectedUnit] + ' 1',
+                        name: this.units[this.selectedUnit].name + ' 1',
+                        type:'line',
+                        smooth:this.smooth,
+                        symbol: 'none',
+                        sampling: 'average',
+                        itemStyle: {
+                            color: this.colors[0]
+                        },
+                        data: this.serie1,
+                    })
+                }
+                if(this.serie2Checkbox){
+                    series.push({
+                        name: this.units[this.selectedUnit].name + ' 2',
                         type:'line',
                         smooth:this.smooth,
                         symbol: 'none',
@@ -540,12 +614,12 @@ export default {
                         itemStyle: {
                             color: this.colors[1]
                         },
-                        data: this.serie1,
+                        data: this.serie2,
                     })
                 }
-                if(this.serie2Checkbox){
+                if(this.serie3Checkbox){
                     series.push({
-                        name: this.units[this.selectedUnit] + ' 2',
+                        name: this.units[this.selectedUnit].name + ' 3',
                         type:'line',
                         smooth:this.smooth,
                         symbol: 'none',
@@ -553,24 +627,28 @@ export default {
                         itemStyle: {
                             color: this.colors[2]
                         },
-                        data: this.serie2,
-                    })
-                }
-                if(this.serie3Checkbox){
-                    series.push({
-                        name: this.units[this.selectedUnit] + ' 3',
-                        type:'line',
-                        smooth:this.smooth,
-                        symbol: 'none',
-                        sampling: 'average',
-                        itemStyle: {
-                            color: this.colors[3]
-                        },
                         data: this.serie3,
                     })
                 }
                 return series;
             },
+            clear(){
+                console.log('clearing chart...')
+                this.readings = [];
+                this.serie1= [];
+                this.serie2= [];
+                this.serie3= [];
+                this.yMax= Number.NEGATIVE_INFINITY;
+                this.yMin= Number.POSITIVE_INFINITY;
+                this.yMax2= Number.NEGATIVE_INFINITY;
+                this.yMin2= Number.POSITIVE_INFINITY;
+                this.yMax3= Number.NEGATIVE_INFINITY;
+                this.yMin3= Number.POSITIVE_INFINITY;
+                this.serie1Checkbox= true;
+                this.serie2Checkbox= false;
+                this.serie3Checkbox= false;
+                this.refreshEchartSeries();
+            }
         }
     }
 </script>

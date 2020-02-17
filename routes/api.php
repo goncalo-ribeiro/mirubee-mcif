@@ -32,6 +32,14 @@ Route::middleware('auth:api')->post('/readings/threephase', 'ReadingThreePhaseCo
 Route::middleware('auth:api')->get('/sites/{siteId}/readings/{start}/{end}', 'SiteController@getReadings');
 Route::middleware('auth:api')->get('/sites/{siteId}/devices/', 'SiteController@getSiteDevices');
 Route::middleware('auth:api')->get('/sites/{siteId}/devices/{deviceId}/readings/{start}/{end}', 'SiteController@getDeviceReadings');
+Route::middleware('auth:api')->post('/sites/{siteId}/tariffs/', 'SiteController@setTariff');
+Route::middleware('auth:api')->put('/sites/{siteId}/tariffs/', 'SiteController@updateTariff');
+Route::middleware('auth:api')->delete('/sites/{siteId}/tariffs/', 'SiteController@deleteTariff');
+
+Route::middleware('auth:api')->get('/alerts', 'AlertController@index');
+Route::middleware('auth:api')->post('/alerts', 'AlertController@store');
+Route::middleware('auth:api')->put('/alerts', 'AlertController@update');
+Route::middleware('auth:api')->delete('/alerts/{alertId}/', 'AlertController@destroy');
 
 Route::middleware('auth:api')->get('/devices', 'DeviceController@index');
 Route::middleware('auth:api')->put('/devices/{deviceId}', 'DeviceController@update');

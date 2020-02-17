@@ -51,7 +51,8 @@
                             <router-link class="nav-link" :to="{ name: 'devices', params: { sites: userSites}}">devices</router-link>
                         </li>
                         <li class="nav-item" v-bind:class="{ active: activeTab == 'tariffs' }" v-on:click="activeTab = 'tariffs';activeSiteId = -1">
-                            <router-link class="nav-link" to="/tariffs">tariffs</router-link>
+                            <router-link class="nav-link"
+                                :to="{ name: 'tariffs', params: { sites: userSites}}">tariffs</router-link>
                         </li>
                         <li class="nav-item" v-bind:class="{ active: activeTab == 'alerts' }" v-on:click="activeTab = 'alerts';activeSiteId = -1">
                             <router-link class="nav-link" to="/alerts">alerts</router-link>
@@ -87,7 +88,8 @@
                         @site-deleted="siteDeleted"
                         @sites-retrieved="sitesRetrieved"
                         @site-updated="siteUpdated"
-                        >
+                        @tariff-updated="tariffUpdated"
+                        @tariff-deleted="tariffDeleted">
                     </router-view>
                 </keep-alive>
             </transition>
@@ -230,7 +232,19 @@
                 this.userSites[index] = site;
                 this.$router.push({ name: 'sites', params: { siteId: site.id, siteName: site.name, siteLocation: site.location}})
                 this.activeSiteId = site.id
+            },
+            tariffUpdated(siteID, tariff){
+                console.log(siteID, tariff)
+                let index = this.userSites.findIndex( element => element.id === siteID)
+
+                this.userSites[index].tariff = tariff;
+            },
+            tariffDeleted(siteID){
+                let index = this.userSites.findIndex( element => element.id === siteID)
+
+                this.userSites[index].tariff = null;
             }
+            
         }
     }
 </script>

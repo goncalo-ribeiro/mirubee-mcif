@@ -77,7 +77,7 @@ const routes = [
             { path: '/sites', component: sitePicker, name: 'sitePicker'},
             { path: '/sites/:siteName', component: sites, name: 'sites', props:true},
             { path: '/devices', component: devices, name:'devices', props:true},
-            { path: '/tariffs', component: tariffs},
+            { path: '/tariffs', component: tariffs, name:'tariffs', props:true},
             { path: '/alerts', component: alerts},
             { path: '/reports', component: reports,
         children: [
