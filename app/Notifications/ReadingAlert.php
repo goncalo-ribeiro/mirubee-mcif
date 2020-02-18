@@ -37,10 +37,14 @@ class ReadingAlert extends Notification implements ShouldQueue
     public function via($notifiable)
     {
         $now = time();
-        return (
-            $this->mail && 
-            (Carbon::parse($this->alert->last_sent_email)->timestamp + 86400) < $now)    //desde que tenha passado mais de 24 horas desde o ultimo email deste alerta
-            ? ['database', 'mail'] : ['database'];
+        $last = $this->alert->last_sent_email;
+        $anEmailWasSentInTheLast24Hours = false;
+        if($last === null || Carbon::parse($last)->timestamp + 86400 < $now){
+            $anEmailWasSentInTheLast24Hours = true;
+        }
+        Log::debug('now ' . $now);
+        Log::debug('24h? ' . $anEmailWasSentInTheLast24Hours);
+        return ($this->mail && $anEmailWasSentInTheLast24Hours) ? ['database', 'mail'] : ['database'];
     }
 
     /**
@@ -51,11 +55,12 @@ class ReadingAlert extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
+        Log::debug('sending mail');
         $this->alert->last_sent_email = Carbon::now();
         $this->alert->save();
         return (new MailMessage)
                     ->subject('Alert Triggered! (' . $this->alert->name . ')')
-                    ->greeting('Greetings> ' . $notifiable->name)
+                    ->greeting('Greetings ' . $notifiable->name)
                     ->line('Your alert (' . $this->alert->name . ') has been triggered!')
                     ->action('Click here to see more details', url('/'))
                     ->line('Thank you for using our application!');

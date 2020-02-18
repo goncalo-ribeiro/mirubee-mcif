@@ -20,7 +20,9 @@
                                 <a class="list-group-item clearfix">
                                     {{alert.name}}
                                     <span style="float: right!important;">
-                                        <button data-toggle="modal" data-target="#view-alert-modal" type="button" class="btn btn-primary btn-sm">{{getNotifications(alert)}}</button> 
+                                        <button data-toggle="modal" data-target="#view-alert-modal" type="button" class="btn btn-primary btn-sm">view notifications 
+                                            <span class="badge badge-info">{{userNotifications[alert.id].length}}</span>
+                                            </button> 
                                         <button data-toggle="modal" data-target="#create-alert-modal" type="button" class="btn btn-primary btn-sm" @click="setMode('edit', alert)">edit</button>
                                         <button data-toggle="modal" data-target="#remove-alert" type="button" class="btn btn-danger btn-sm" @click="setMode('remove', alert)">remove</button>
                                     </span>
@@ -146,7 +148,6 @@
 </template>
 
 <script>
-import func from '../../../vue-temp/vue-editor-bridge';
 export default {
         name: "alertas",
         mounted() {
@@ -181,22 +182,24 @@ export default {
         },
         computed:{
             userNotifications: function(){
-                let userNotifications = []
+                let userNotifications = {}
 
-                this.alerts.forEach(alert=>{
-                    let temp = {};
-                    temp[alert.id] = [] 
-                    userNotifications.push(temp);
+                if(this.alerts.length){
+                    this.alerts.forEach(alert=>{
 
-                    this.notifications.forEach(notification=>{
-                        if(notification.data.alert_id === alert.id){
-                            userNotifications[alert.id].push(notification);
-                        }
-                    })
-                });
+                        userNotifications[alert.id] = [];
 
-                return userNotifications
-            }
+                
+                        this.notifications.forEach(notification=>{
+                            if(notification.data.alert_id === alert.id){
+                                userNotifications[alert.id].push(notification);
+                            }
+                        })
+                    });
+                    return userNotifications;
+                }
+                return [];
+            },
         },
         methods:{
             setMode(mode, alert = null){
