@@ -61,16 +61,17 @@
                     })
                     .then(response => {
                         console.log("Server Accepted new User: ", response.data);
-                        Event.$emit('register-success', this.email);
+                        //Event.$emit('register-success', this.email);
                         this.clearInputFields();
                         //this.$emit('register-success');
-                        //this.$events.fire('toast', 'Your account was succesfully created, check your email to activate it', 5, 'success');
+                        Vue.toasted.show('Successfully Registered, check your email to activate your account', { icon : 'check', type: 'success'});
                     })
                     .catch(error => {
                         console.log("Server Denied new User: ");
+                        console.log(error)
                         console.log(error.response.data);
-                        this.registerFailedMsg = undefined;
                         this.$emit('register-fail');
+                        Vue.toasted.show(error.response.data, { icon : 'cancel', type: 'error'});
                         //this.$events.fire('toast', message, 5, 'danger');
                     });
             },
@@ -91,11 +92,11 @@
             },
 
             clearInputFields(){
-                this.email = undefined;
-                this.name = undefined;
-                this.password = undefined;
-                this.passwordConfirmation = undefined;
-                this.registerFailedMsg = undefined;
+                this.email = '';
+                this.name = '';
+                this.password = '';
+                this.passwordConfirmation = '';
+                this.registerFailedMsg = '';
             },
         },
         mounted() {

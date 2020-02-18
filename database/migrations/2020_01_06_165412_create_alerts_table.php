@@ -25,6 +25,8 @@ class CreateAlertsTable extends Migration
             $table->enum('type', ['email', 'website']);    //  [note: "define o tipo de alerta (email, sms, website, etc.)"]
 
             $table->enum('condition', ['bigger than', 'lesser than', 'between', 'equal']);
+
+            $table->timestamp('last_sent_email')->nullable();
         });
 
 

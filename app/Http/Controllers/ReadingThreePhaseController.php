@@ -6,10 +6,14 @@ use App\ReadingThreePhase;
 use App\Device;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Log;
+
 use Illuminate\Support\Facades\Auth;
 
 use App\Http\Resources\ReadingThreePhase as ReadingThreePhaseResource;
 use App\Http\Resources\Device as DeviceResource;
+
+use App\Events\ReadingInserted;
 
 class ReadingThreePhaseController extends Controller
 {
@@ -44,6 +48,7 @@ class ReadingThreePhaseController extends Controller
      */
     public function store(Request $request)
     {
+        //Log::debug($request);
         $deviceCreated = false;
 
         if(is_null(Device::where('mac_address', $request->mac)->first())){
@@ -114,6 +119,8 @@ class ReadingThreePhaseController extends Controller
         }   
         $reading->device()->associate($device);
         $reading->save();
+
+        event(new ReadingInserted($reading, Auth::user()));
 
         return response()->json(['message' => 'a new reading was created', 
         'reading' => new ReadingThreePhaseResource($reading),

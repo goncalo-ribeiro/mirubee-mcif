@@ -6,19 +6,26 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use App\Alert;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
-class ReadingAlert extends Notification
+class ReadingAlert extends Notification implements ShouldQueue
 {
     use Queueable;
+
+    public $alert;
+    public $mail;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($alert, $mail = false)
     {
-        //
+        $this->alert = $alert;
+        $this->mail = $mail;
     }
 
     /**
@@ -29,7 +36,11 @@ class ReadingAlert extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        $now = time();
+        return (
+            $this->mail && 
+            (Carbon::parse($this->alert->last_sent_email)->timestamp + 86400) < $now)    //desde que tenha passado mais de 24 horas desde o ultimo email deste alerta
+            ? ['database', 'mail'] : ['database'];
     }
 
     /**
@@ -40,9 +51,13 @@ class ReadingAlert extends Notification
      */
     public function toMail($notifiable)
     {
+        $this->alert->last_sent_email = Carbon::now();
+        $this->alert->save();
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
+                    ->subject('Alert Triggered! (' . $this->alert->name . ')')
+                    ->greeting('Greetings> ' . $notifiable->name)
+                    ->line('Your alert (' . $this->alert->name . ') has been triggered!')
+                    ->action('Click here to see more details', url('/'))
                     ->line('Thank you for using our application!');
     }
 
@@ -55,7 +70,8 @@ class ReadingAlert extends Notification
     public function toArray($notifiable)
     {
         return [
-            //
+            'alert_id' => $this->alert->id,
         ];
     }
 }
+

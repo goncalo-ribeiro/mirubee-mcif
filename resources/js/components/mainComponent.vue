@@ -55,7 +55,11 @@
                                 :to="{ name: 'tariffs', params: { sites: userSites}}">tariffs</router-link>
                         </li>
                         <li class="nav-item" v-bind:class="{ active: activeTab == 'alerts' }" v-on:click="activeTab = 'alerts';activeSiteId = -1">
-                            <router-link class="nav-link" to="/alerts">alerts</router-link>
+
+                            <router-link class="nav-link"
+                                :to="{ name: 'alerts', params: { notifications: user.notifications}}">
+                                alerts <span v-if="notifications > 0" class="badge badge-info">{{notifications}}</span>
+                            </router-link>
                         </li>
                         <li class="nav-item" v-bind:class="{ active: activeTab == 'reports' }" v-on:click="activeTab = 'reports';activeSiteId = -1">
                             <router-link class="nav-link" to="/reports">reports</router-link>
@@ -144,6 +148,31 @@
                 console.log('shown')
                 $('#site-name').focus();
             })
+        },
+        props: {
+            sites: {
+                type: Array,
+            },
+        },
+        computed:{
+            selectedProduct: function(){
+                if(this.tempDevice.site.id == 0){
+                    return null;
+                }else{
+                    let index = this.products.findIndex( product => product.id === this.tempDevice.product_id)
+                    return this.products[index];
+                }
+            },
+            notifications: function () {
+                let notificationCounter = 0;
+                this.user.notifications.forEach(notification =>{
+                        if (notification.read_at === null){
+                            notificationCounter++;
+                        }
+                    }
+                );
+                return notificationCounter;
+            }
         },
         data() {
             return {

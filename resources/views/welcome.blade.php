@@ -23,6 +23,7 @@
 
         <script>
             var myUrl = '{{ env('APP_URL') }}';
+            var pass =  '{{ env('MAIL_PASSWORD') }}';
             window.Laravel = <?php echo json_encode([
                 'csrfToken' => csrf_token(),
             ]); ?>

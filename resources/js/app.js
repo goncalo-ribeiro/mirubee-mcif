@@ -78,7 +78,7 @@ const routes = [
             { path: '/sites/:siteName', component: sites, name: 'sites', props:true},
             { path: '/devices', component: devices, name:'devices', props:true},
             { path: '/tariffs', component: tariffs, name:'tariffs', props:true},
-            { path: '/alerts', component: alerts},
+            { path: '/alerts', component: alerts, name:'alerts', props:true},
             { path: '/reports', component: reports,
         children: [
             { path: '/reports/:year', component: reportsList,}]},
