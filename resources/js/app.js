@@ -47,6 +47,7 @@ const tariffs = Vue.component('tariffs', require('./components/tariffs.vue').def
 const alerts = Vue.component('alerts', require('./components/alerts.vue').default);
 const reports = Vue.component('reports', require('./components/reports.vue').default);
 const reportsList = Vue.component('reportsList', require('./components/reports/reportsList.vue').default);
+const monthlyReport = Vue.component('monthlyReport', require('./components/reports/monthlyReport.vue').default);
 
 /*
 const echartString =  Vue.component('echartString', require('./components/charts/echartString.vue').default);
@@ -79,10 +80,14 @@ const routes = [
             { path: '/devices', component: devices, name:'devices', props:true},
             { path: '/tariffs', component: tariffs, name:'tariffs', props:true},
             { path: '/alerts', component: alerts, name:'alerts', props:true},
-            { path: '/reports', component: reports,
-        children: [
-            { path: '/reports/:year', component: reportsList,}]},
-    ]},
+            { path: '/reports', component: reports, name:'reports', props:true,
+                children: [
+                    { path: '/reports/:year', component: reportsList, name:'reportsList', props: true},
+                    { path: '/reports/:year/:month', component: monthlyReport, name:'monthlyReport', props: true}
+                ]
+            },
+        ]
+    },
     /*
     { path: '/sites', component: sites,
         children: [

@@ -39,6 +39,12 @@ Route::middleware('auth:api')->delete('/sites/{siteId}/tariffs/', 'SiteControlle
 Route::middleware('auth:api')->get('/alerts', 'AlertController@index');
 Route::middleware('auth:api')->post('/alerts', 'AlertController@store');
 Route::middleware('auth:api')->put('/alerts', 'AlertController@update');
+
+// read notifications
+Route::middleware('auth:api')->put('alerts/{alertId}/notifications', 'AlertController@readNotifications');
+Route::middleware('auth:api')->delete('alerts/notifications/{notificationId}', 'AlertController@deleteNotification');
+Route::middleware('auth:api')->delete('alerts/{alertId}/notifications', 'AlertController@deleteAlertNotifications');
+
 Route::middleware('auth:api')->delete('/alerts/{alertId}/', 'AlertController@destroy');
 
 Route::middleware('auth:api')->get('/devices', 'DeviceController@index');
@@ -46,4 +52,6 @@ Route::middleware('auth:api')->put('/devices/{deviceId}', 'DeviceController@upda
 
 Route::middleware('auth:api')->get('users/email/{email}', 'UserControllerApi@userByEmail');
 
-Route::get('readings', 'ReadingThreePhaseController@index');
+//Route::get('readings', 'ReadingThreePhaseController@index');
+
+Route::middleware('auth:api')->get('reports', 'ReportController@getUserReports');

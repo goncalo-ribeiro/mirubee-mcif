@@ -318,6 +318,7 @@ export default {
 
                 axios.get(myUrl + '/api/sites/' + this.siteId + '/readings/' + start.getTime()/1000 + '/' + end.getTime()/1000 )
                 .then( success => {
+                    this.randomizeReadingsOfOtherPhases(success.data.readings);
                     this.readings = success.data.readings;
 
                     if(this.readings.length == 0){
@@ -328,6 +329,12 @@ export default {
                     this.setupSeriesandDrawGraph();
                     
                 });
+            },
+
+            randomizeReadingsOfOtherPhases(readings){
+                for (let i = 0; i < readings.length; i++) {
+                    readings[i].v3 = readings[i].v3 + Math.floor(Math.random() * 3) - 1 // entre -1 e 1
+                }
             },
 
             setupSeriesandDrawGraph(){

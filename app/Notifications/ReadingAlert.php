@@ -16,16 +16,18 @@ class ReadingAlert extends Notification implements ShouldQueue
 
     public $alert;
     public $mail;
+    public $reading;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($alert, $mail = false)
+    public function __construct($alert, $mail = false, $reading)
     {
         $this->alert = $alert;
         $this->mail = $mail;
+        $this->reading = $reading;
     }
 
     /**
@@ -76,6 +78,7 @@ class ReadingAlert extends Notification implements ShouldQueue
     {
         return [
             'alert_id' => $this->alert->id,
+            'reading' => $this->reading,
         ];
     }
 }

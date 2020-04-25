@@ -35,7 +35,7 @@ export default {
             })
             .then( success => {
                 this.user = success.data.data;
-                console.log(JSON.stringify(this.user));
+                //console.log(JSON.stringify(this.user));
                 // Cookies.set('user', JSON.stringify(this.user), {expires: 7, path: BASE_URL});
 
                 Event.$emit('login-success');

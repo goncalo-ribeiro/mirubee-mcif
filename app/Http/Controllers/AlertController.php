@@ -123,4 +123,43 @@ class AlertController extends Controller
         Alert::destroy($alertId);
         return response()->json(['message' => 'the selected alert was deleted', 'alert' => new AlertResource($alert), 'id' =>$alertId], 200);
     }
+
+    public function readNotifications($alertId){
+        $user = Auth::user();
+
+        foreach ($user->unreadNotifications as $notification) {
+            if($notification->data['alert_id'] == $alertId){
+                $notification->markAsRead();
+            }
+        }
+    }
+
+    public function deleteNotification($notificationId){
+        $user = Auth::user();
+
+        foreach ($user->Notifications as $notification) {
+            if($notification->id == $notificationId){
+                $notification->delete();
+            }
+        }
+        return response()->json(['message' => 'the notification was deleted'], 200);
+    }
+
+    public function deleteAlertNotifications($alertId){
+        $user = Auth::user();
+        $counter = 0;
+
+        foreach ($user->Notifications as $notification) {
+            if($notification->data['alert_id'] == $alertId){
+                $notification->delete();
+                $counter++;
+            }
+        }
+        if($counter == 1){
+            return response()->json(['message' => '1 notification was deleted'], 200);
+        }
+        if($counter > 1){
+            return response()->json(['message' => $counter . ' notifications were deleted'], 200);
+        }
+    }
 }

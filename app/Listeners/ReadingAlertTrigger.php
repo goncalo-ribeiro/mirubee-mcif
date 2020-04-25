@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Events\ReadingInserted;
 use App\Alert;
+use App\Report;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -35,9 +36,29 @@ class ReadingAlertTrigger
         $this->user = ($event->user);
         Log::debug('[Reading inserted] user.id =>'. $event->user->id);
         
+        Log::debug('$event->user->alerts =>'. $event->user->alerts);
+        $this->checkReportCreation($event->reading);
         foreach($event->user->alerts as $alert){
+            Log::debug('checking trigger: '. $alert);
             $this->checkTrigger($alert, $event->reading);
         } 
+    }
+
+    public function checkReportCreation($reading){
+        $months =  array('january','february','march','april','may','june','july ','august','september','october','november','december');
+
+        if(!Report::where('year',$reading->calc_year)->where('month', $months[$reading->calc_month-1])->where('user_id',$reading->device->user_id)->exists()){
+            Log::debug('New Report created!: ');
+            $report = new Report;
+            $report->year = $reading->calc_year;
+            $report->month = $months[$reading->calc_month-1];
+            $report->user_id = $reading->device->user_id;
+            $report->time = $reading->time;
+            $report->save();
+            Log::debug('Report Debug: '. $report);
+        }else{
+            Log::Debug('Report already exists!: ');        
+        }
     }
 
     public function checkTrigger(Alert $alert, $reading){
@@ -91,13 +112,13 @@ class ReadingAlertTrigger
         switch ($alert->condition) {
             case 'bigger than':
                 if($readingUnitValue[0] > $alert->threshold || $readingUnitValue[1] > $alert->threshold || $readingUnitValue[2] > $alert->threshold){
-                    $this->fireAlert($alert);
+                    $this->fireAlert($alert, $readingUnitValue);
                     return true;
                 }
             return false;
             case 'lesser than':
                 if($readingUnitValue[0] < $alert->threshold || $readingUnitValue[1] < $alert->threshold || $readingUnitValue[2] < $alert->threshold){
-                    $this->fireAlert($alert);
+                    $this->fireAlert($alert, $readingUnitValue);
                     return true;
                 }
             return false;
@@ -106,22 +127,22 @@ class ReadingAlertTrigger
                     ($readingUnitValue[0] > $alert->threshold && $readingUnitValue[0] < $alert->threshold2) || 
                     ($readingUnitValue[1] > $alert->threshold && $readingUnitValue[1] < $alert->threshold2) || 
                     ($readingUnitValue[2] > $alert->threshold && $readingUnitValue[2] < $alert->threshold2) ){
-                        $this->fireAlert($alert);
+                        $this->fireAlert($alert, $readingUnitValue);
                         return true;
                 }
             return false;
             case 'equal':
                 if($readingUnitValue[0] == $alert->threshold || $readingUnitValue[1] == $alert->threshold || $readingUnitValue[2] == $alert->threshold){
-                    $this->fireAlert($alert);
+                    $this->fireAlert($alert, $readingUnitValue);
                     return true;
                 }
             return false;
         }
     }
 
-    public function fireAlert(Alert $alert){
+    public function fireAlert(Alert $alert, $readingUnitValue){
         $sendMail = ($alert->type == "email") ? true : false;
         Log::debug('    Alert Fired => '. $alert->name . '; *** $sendMail = '. $sendMail);
-        $this->user->notify(new ReadingAlert($alert, $sendMail));
+        $this->user->notify(new ReadingAlert($alert, $sendMail, $readingUnitValue));
     }
 }

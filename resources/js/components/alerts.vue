@@ -15,14 +15,14 @@
 
                     <div class="card-body" >
                         <div v-if="alerts.length">
-                            <div v-for="alert in alerts" :key="alert.id" class="list-group">
+                            <div class="list-group">
                                 
-                                <a class="list-group-item clearfix">
+                                <a v-for="alert in alerts" :key="alert.id" class="list-group-item clearfix">
                                     {{alert.name}}
                                     <span style="float: right!important;">
-                                        <button data-toggle="modal" data-target="#view-alert-modal" type="button" class="btn btn-primary btn-sm">view notifications 
-                                            <span class="badge badge-info">{{userNotifications[alert.id].length}}</span>
-                                            </button> 
+                                        <button data-toggle="modal" data-target="#notifications-modal" type="button" class="btn btn-primary btn-sm" @click="setAlert(alert)">view notifications 
+                                            <span class="badge badge-info">{{unreadNotifications[alert.id]}}</span>
+                                        </button> 
                                         <button data-toggle="modal" data-target="#create-alert-modal" type="button" class="btn btn-primary btn-sm" @click="setMode('edit', alert)">edit</button>
                                         <button data-toggle="modal" data-target="#remove-alert" type="button" class="btn btn-danger btn-sm" @click="setMode('remove', alert)">remove</button>
                                     </span>
@@ -142,6 +142,52 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="notifications-modal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog  modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" >{{AlertName}} notifications</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+<!-- rgba(255, 255, 255, 0.05) -->
+                        <table class="table table-dark">
+                            <thead>
+                                <tr class="table-dark">
+                                    <th scope="col">value(s) registered</th>
+                                    <th scope="col">date triggered</th>
+                                    <th scope="col">time triggered</th>
+                                    <th scope="col">actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="notification in userNotifications[AlertId]" :key="notification.id" 
+                                v-bind:style="{backgroundColor: rowBackgroundColor(notification.read_at)}">
+                                    <td v-if="notification.data.reading.length">[{{notification.data.reading[0]}}, {{notification.data.reading[1]}}, {{notification.data.reading[2]}}]</td>
+                                    <td v-else>{{notification.data.reading}}</td>
+                                    <td>{{notification.created_at.split(" ")[0]}}</td>
+                                    <td>{{notification.created_at.split(" ")[1]}}</td>
+                                    <td>
+                                        <button type="button" @click="deleteNotification(notification)" 
+                                        class="btn btn-danger btn-sm">remove <i class="material-icons" 
+                                        style="padding-left:4px; vertical-align: middle; font-size:16px;">delete</i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" @click="deleteNotifications()" >remove all</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">back</button>
+                    </div>
+                </div>
+            </div>
+        </div>  
+
     </div>
 <!--
     -->
@@ -152,7 +198,14 @@ export default {
         name: "alertas",
         mounted() {
             console.log('Component mounted.')
+            console.log(this);
             
+            let _this = this;
+
+            $('#notifications-modal').on('hide.bs.modal', () => {
+                _this.readNotifications();
+            })
+
         },
         activated(){
             console.log('alerts component activated.');
@@ -179,6 +232,9 @@ export default {
             notifications: {
                 type: Array,
             },
+            unreadNotifications:{
+                type: Object,
+            }
         },
         computed:{
             userNotifications: function(){
@@ -204,6 +260,10 @@ export default {
         methods:{
             setMode(mode, alert = null){
                 this.mode = mode;
+                this.setAlert(alert);
+                console.log(this.AlertId);
+            },
+            setAlert(alert = null){
                 if(alert != null){
                     this.AlertId = alert.id
                     this.AlertName = alert.name
@@ -221,7 +281,6 @@ export default {
                     this.AlertThreshold = null
                     this.AlertThreshold2 = null
                 }
-                console.log(this.AlertId);
             },
             getUserAlerts(){
                 axios.get(myUrl+"/api/alerts")
@@ -330,7 +389,42 @@ export default {
                     }
                 })
                 return userNotifications
+            },
+
+            rowBackgroundColor(read_at){
+                console.log("bg color")
+                if (!read_at){
+                    return "rgba(255, 255, 255, 0.05)";
+                }
+            },
+
+            readNotifications(){
+                //console.log("readNotifications", this.AlertId)
+                //console.log(this.userNotifications[this.AlertId])
+                this.$emit('notifications-read', this.AlertId);
+                delete this.unreadNotifications[this.AlertId];
+            },
+
+            deleteNotification(notification){
+                delete this.unreadNotifications[this.AlertId];
+                this.$emit('delete-notification', notification);
+                this.notifications.forEach((item, index) => {
+                    if(item.id == notification.id){
+                        this.notifications.splice(index, 1)
+                    }
+                });
+            },
+
+            deleteNotifications(){
+                delete this.unreadNotifications[this.AlertId];
+                this.$emit('delete-alert-notifications', this.AlertId);
+                this.notifications.forEach((item, index) => {
+                    if(item.data.alert_id == this.AlertId){
+                        this.notifications.splice(index, 1)
+                    }
+                });
             }
+
         }
     }
 </script>

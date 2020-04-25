@@ -1,0 +1,7 @@
+DB::table('readings_three_phase')->select('calc_month', 'calc_year')->groupBy('calc_month', 'calc_year')->get();
+
+
+DB::table('users')->select('users.id','calc_month', 'calc_year')->rightJoin('devices', 'users.id', '=', 'devices.user_id')->rightJoin('readings_three_phase', 'devices.id', '=', 'readings_three_phase.device_id')->groupBy('calc_month', 'calc_year')->get();
+
+
+DB::table('users')->select('user_id','calc_month', 'calc_year')->rightJoin('devices', 'users.id', '=', 'devices.user_id')->rightJoin('readings_three_phase', 'devices.id', '=', 'readings_three_phase.device_id')->groupBy('user_id', 'calc_month', 'calc_year')->get();

@@ -57,12 +57,12 @@
                         <li class="nav-item" v-bind:class="{ active: activeTab == 'alerts' }" v-on:click="activeTab = 'alerts';activeSiteId = -1">
 
                             <router-link class="nav-link"
-                                :to="{ name: 'alerts', params: { notifications: user.notifications}}">
-                                alerts <span v-if="notifications > 0" class="badge badge-info">{{notifications}}</span>
+                                :to="{ name: 'alerts', params: { notifications: user.notifications, unreadNotifications: unreadNotifications}}">
+                                alerts <span v-if="notifications > 0" class="badge badge-info">{{sumObjectProperties(unreadNotifications)}}</span>
                             </router-link>
                         </li>
                         <li class="nav-item" v-bind:class="{ active: activeTab == 'reports' }" v-on:click="activeTab = 'reports';activeSiteId = -1">
-                            <router-link class="nav-link" to="/reports">reports</router-link>
+                            <router-link class="nav-link" :to="{ name: 'reports', params: {fromMain: true}}">reports</router-link>
                         </li>
                     </ul>
                     <!-- Right Side Of Navbar -->
@@ -93,7 +93,10 @@
                         @sites-retrieved="sitesRetrieved"
                         @site-updated="siteUpdated"
                         @tariff-updated="tariffUpdated"
-                        @tariff-deleted="tariffDeleted">
+                        @tariff-deleted="tariffDeleted"
+                        @notifications-read="readNotifications"
+                        @delete-notification="deleteNotification"
+                        @delete-alert-notifications="deleteAlertNotifications">
                     </router-view>
                 </keep-alive>
             </transition>
@@ -133,6 +136,7 @@
 
 <script>
     import Auth from './auth/auth.js';
+import { get } from 'http';
 
     export default {
         mounted() {
@@ -148,6 +152,7 @@
                 console.log('shown')
                 $('#site-name').focus();
             })
+            //this.getReports();
         },
         props: {
             sites: {
@@ -172,6 +177,21 @@
                     }
                 );
                 return notificationCounter;
+            },
+            unreadNotifications: function(){
+                let unreadNotifications = {};
+                this.user.notifications.forEach(notification =>{
+                        if (notification.read_at === null){
+                            if(unreadNotifications[notification.data.alert_id] === undefined){
+                                unreadNotifications[notification.data.alert_id] = 1
+                            }else{
+                                unreadNotifications[notification.data.alert_id]++
+                            }
+                        }
+                    }
+                );
+                return unreadNotifications;
+                  
             }
         },
         data() {
@@ -184,6 +204,8 @@
                 siteLocation: undefined,
 
                 userSites: [],
+                userReports: {},
+                reportsYears: [],
             }
         },
         methods:{
@@ -272,7 +294,114 @@
                 let index = this.userSites.findIndex( element => element.id === siteID)
 
                 this.userSites[index].tariff = null;
-            }
+            },
+
+            readNotifications(alertId){
+                this.user.notifications.forEach(notification => {
+                    if (notification.data.alert_id == alertId){
+                        notification.read_at = 1;
+                    }
+                });
+            
+                axios.put(myUrl+"/api/alerts/" + alertId + "/notifications")
+                .then( response => {
+                    console.log(response);
+                })
+                .catch(error => {
+                    console.log(error.response);
+                
+                    let errors = error.response.data.errors;
+
+                    for (let key in errors){
+                        errors[key].forEach(err => 
+                            Vue.toasted.show(err, { icon : 'cancel', type: 'error'})
+                        );
+                    }
+                })
+            },
+
+            deleteNotification(notification){
+                this.user.notifications.forEach( (item, index) => {
+                    if (item.id == notification.id){
+
+                        axios.delete(myUrl+ "/api/alerts/notifications/" + notification.id)
+                        .then(response => {
+                            console.log(response);
+                            Vue.toasted.show(response.data.message, { icon : 'delete', type: 'success'});
+                        })
+                        .catch(error => {
+                            console.log(error);
+                            let errors = error.response.data.errors;
+
+                            for (let key in errors){
+                                errors[key].forEach(err => 
+                                    Vue.toasted.show(err, { icon : 'cancel', type: 'error'})
+                                );
+                            }
+                        });
+
+                        this.user.notifications.splice(index, 1);
+                    }
+                });
+            },
+
+            deleteAlertNotifications(alertId){
+                this.user.notifications.forEach( (item, index) => {
+                    if (item.data.alert_id == alertId){
+                        this.user.notifications.splice(index, 1);
+                    }
+                });
+
+                axios.delete(myUrl+ "/api/alerts/"+ alertId +"/notifications/")
+                .then(response => {
+                    console.log(response);
+                    Vue.toasted.show(response.data.message, { icon : 'delete', type: 'success'});
+                })
+                .catch(error => {
+                    console.log(error);
+                    let errors = error.response.data.errors;
+
+                    for (let key in errors){
+                        errors[key].forEach(err => 
+                            Vue.toasted.show(err, { icon : 'cancel', type: 'error'})
+                        );
+                    }
+                });
+            },
+
+            sumObjectProperties(obj){
+                var sum = 0;
+                for( var el in obj ) {
+                    if( obj.hasOwnProperty( el ) ) {
+                        sum += parseFloat( obj[el] );
+                        }
+                    }
+                return sum;
+            },
+/*
+            getReports(){
+                axios.get(myUrl+"/api/reports")
+                .then(response =>{
+                    console.log(response.data);
+
+                    response.data.forEach(report => {
+                        if (this.userReports[report.year]){
+                            this.userReports[report.year].push(report.month)
+                        }else{
+                            this.userReports[report.year] = [];
+                            this.userReports[report.year].push(report.month);
+                        }
+                        if (!this.reportsYears.includes(report.year)){
+                            this.reportsYears.push(report.year);
+                        }
+                                            
+                    })
+                })
+                .catch(error =>{
+                    console.log(error);
+                    Vue.toasted.show('error ' + error.response.status + ": " + error.response.data.message + " (user's reports retrieval)", { icon : 'cancel', type: 'error'});
+                })    
+            },*/
             
         }
     }

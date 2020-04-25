@@ -61,7 +61,7 @@
             <div class="modal-dialog  modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" >update {{selectedSite.name}}'s' tariff</h5>
+                        <h5 class="modal-title" >update {{selectedSite.name}}'s tariff</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -70,17 +70,17 @@
 
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="potencia">contracted power</label>
+                                <label for="potencia">contracted power (kVa)</label>
                                 <input autofocus type="text" class="form-control" id="potencia-update" placeholder="kVa" @input="updateExistingTariff('contracted_power', $event)">
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="preço">daily power price</label>
+                                <label for="preço">daily power price (€)</label>
                                 <input type="text" class="form-control" id="preço-update" placeholder="€" @input="updateExistingTariff('daily_power_price', $event)">
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="imposto">tax</label>
+                                <label for="imposto">tax (%)</label>
                                 <input type="number" class="form-control" id="imposto-update" placeholder="%" @input="updateExistingTariff('tax', $event)">
                             </div>
                             <div class="form-group col-md-6">
@@ -97,25 +97,25 @@
                         <span v-show="tariff_type_select == 0">choose the type of tariff above to set the consumption price for each time of the day</span>
                         <div class="form-row">
                             <div v-show="tariff_type_select == 1" class="form-group col-md-6">
-                                <label for="preco-simples">consumption price</label>
+                                <label for="preco-simples">consumption price (€/kWh)</label>
                                 <input autofocus type="number" class="form-control" id="preco-simples-update" placeholder="€/kWh" @input="updateExistingTariff('price_simple', $event)">
                             </div>
                             <div v-show="tariff_type_select > 1" class="form-group col-md-6">
-                                <label for="vazio">consumption price during off-peak hours</label>
+                                <label for="vazio">consumption price during off-peak hours (€/kWh)</label>
                                 <input type="number" class="form-control" id="vazio-update" placeholder="€/kWh" @input="updateExistingTariff('price_off_peak_hours', $event)">
                             </div>
                             <div v-show="tariff_type_select == 2" class="form-group col-md-6">
-                                <label for="fora-vazio">consumption price outside off-peak hours</label>
+                                <label for="fora-vazio">consumption price outside off-peak hours (€/kWh)</label>
                                 <input type="number" class="form-control" id="fora-vazio-update" placeholder="€/kWh" @input="updateExistingTariff('price_outside_off_peak_hours', $event)">
                             </div>
                             <div v-show="tariff_type_select == 3" class="form-group col-md-6">
-                                <label for="ponta">consumption price during peak hours</label>
+                                <label for="ponta">consumption price during peak hours (€/kWh)</label>
                                 <input type="number" class="form-control" id="ponta-update" placeholder="€/kWh" @input="updateExistingTariff('price_peak_hours', $event)">
                             </div>
                         </div>   
                         <div class="form-row">                     
                             <div v-show="tariff_type_select == 3" class="form-group col-md-6">
-                                <label for="cheias">consumption price during full time</label>
+                                <label for="cheias">consumption price during full time (€/kWh)</label>
                                 <input type="number" class="form-control" id="cheias-update" placeholder="€/kWh" @input="updateExistingTariff('price_full_time_hours', $event)">
                             </div>
                         </div>
@@ -132,7 +132,7 @@
             <div class="modal-dialog  modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" >set up {{selectedSite.name}}'s' tariff</h5>
+                        <h5 class="modal-title" >set up {{selectedSite.name}}'s tariff</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -141,17 +141,17 @@
 
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="potencia">contracted power</label>
+                                <label for="potencia">contracted power (kVa)</label>
                                 <input autofocus type="text" class="form-control" id="potencia" placeholder="kVa" @input="updateNewTariff('contracted_power', $event)">
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="preço">daily power price</label>
+                                <label for="preço">daily power price (€)</label>
                                 <input type="text" class="form-control" id="preço" placeholder="€" @input="updateNewTariff('daily_power_price', $event)">
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="imposto">tax</label>
+                                <label for="imposto">tax (%)</label>
                                 <input type="number" class="form-control" id="imposto" placeholder="%" @input="updateNewTariff('tax', $event)">
                             </div>
                             <div class="form-group col-md-6">
@@ -168,25 +168,25 @@
                         <span v-if="tariff_type_select == 0">choose the type of tariff above to set the consumption price for each time of the day</span>
                         <div class="form-row">
                             <div v-if="tariff_type_select == 1" class="form-group col-md-6">
-                                <label for="preco-simples">consumption price</label>
+                                <label for="preco-simples">consumption price (€/kWh)</label>
                                 <input autofocus type="number" class="form-control" id="preco-simples" placeholder="€/kWh" @input="updateNewTariff('price_simple', $event)">
                             </div>
                             <div v-if="tariff_type_select > 1" class="form-group col-md-6">
-                                <label for="vazio">consumption price during off-peak hours</label>
+                                <label for="vazio">consumption price during off-peak hours (€/kWh)</label>
                                 <input type="number" class="form-control" id="vazio" placeholder="€/kWh" @input="updateNewTariff('price_off_peak_hours', $event)">
                             </div>
                             <div v-if="tariff_type_select == 2" class="form-group col-md-6">
-                                <label for="fora-vazio">consumption price outside off-peak hours</label>
+                                <label for="fora-vazio">consumption price outside off-peak hours (€/kWh)</label>
                                 <input type="number" class="form-control" id="fora-vazio" placeholder="€/kWh" @input="updateNewTariff('price_outside_off_peak_hours', $event)">
                             </div>
                             <div v-if="tariff_type_select == 3" class="form-group col-md-6">
-                                <label for="ponta">consumption price during peak hours</label>
+                                <label for="ponta">consumption price during peak hours (€/kWh)</label>
                                 <input type="number" class="form-control" id="ponta" placeholder="€/kWh" @input="updateNewTariff('price_peak_hours', $event)">
                             </div>
                         </div>   
                         <div class="form-row">                     
                             <div v-if="tariff_type_select == 3" class="form-group col-md-6">
-                                <label for="cheias">consumption price during full time</label>
+                                <label for="cheias">consumption price during full time (€/kWh)</label>
                                 <input type="number" class="form-control" id="cheias" placeholder="€/kWh" @input="updateNewTariff('price_full_time_hours', $event)">
                             </div>
                         </div>
