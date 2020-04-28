@@ -67,10 +67,11 @@ export default {
         },
         watch:{
             fromMain: function (val) {
-                console.log('watcher', val)
+                console.log('watcher (fromMain)', val)
                 if (val == true){
                     if(this.years.length){
                         this.activeYear = this.years[0];
+                        
                         this.$router.push({ name: 'reportsList', params: { year: this.years[0], months: this.reports[this.years[0]]}}).catch(err => 
                         {
                             console.log(err)
@@ -78,7 +79,7 @@ export default {
                     }  
                     //this.fromMain = false;
                 }
-            }
+            },
         },
         /*
         activated(){
@@ -143,10 +144,7 @@ export default {
                     });
                 }    
 
-                },
-   
-            /*
-*/
+            },
         },
         
     }

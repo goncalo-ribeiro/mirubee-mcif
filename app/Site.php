@@ -21,4 +21,9 @@ class Site extends Model
     {
         return $this->belongsTo('App\Tariff');
     }
+
+    public function readingsThreePhase()
+    {
+        return $this->hasManyThrough('App\ReadingThreePhase', 'App\Device');
+    }
 }

@@ -119,6 +119,47 @@
                                 <input type="number" class="form-control" id="cheias-update" placeholder="€/kWh" @input="updateExistingTariff('price_full_time_hours', $event)">
                             </div>
                         </div>
+
+                        <hr>
+                        <span v-show="tariff_type_select == 0">choose the type of tariff above to set the hour range of the tariffs</span>
+                        <div class="form-row">
+                            <div v-show="tariff_type_select == 1" class="form-group col-md-12">
+                                <label>a simple tariff encompasses the whole day and as such doesn't need further set up</label>
+                            </div>
+                            <div v-show="tariff_type_select > 1" class="form-group col-md-6">
+                                <label for="vazio-time">starting time for off peak hours</label>
+                                
+                                <date-picker style="width:100%" v-model="off_peak_hoursTimeTemp" :time-picker-options="{start: '00:00', step: '01:00', end:'23:00'}"
+                                    format="HH:mm" type="time" placeholder="starting hour of off peak hours" :disabled-time="getDisabledTimeOffPeak"></date-picker>
+                                    
+
+                            </div>
+                            <div v-show="tariff_type_select == 2" class="form-group col-md-6">
+                                <label for="fora-vazio-time">starting time for outside off-peak hours</label>
+
+                                <date-picker style="width:100%" v-model="outside_off_peak_hoursTimeTemp" :time-picker-options="{start: '00:00', step: '01:00', end:'23:00'}"
+                                    format="HH:mm" type="time" placeholder="starting hour of outside off-peak hours" :disabled-time="getDisabledTimeOutsideOffPeak"></date-picker>
+
+                            </div>
+                            <div v-show="tariff_type_select == 3" class="form-group col-md-6">
+                                <label for="ponta-time">starting time for peak hours</label>
+
+                                <date-picker style="width:100%" v-model="peak_hoursTimeTemp" :time-picker-options="{start: '00:00', step: '01:00', end:'23:00'}"
+                                    format="HH:mm" type="time" placeholder="starting hour of peak hours" :disabled-time="getDisabledPeak"></date-picker>
+
+                            </div>
+                        </div>   
+                        <div class="form-row">                     
+                            <div v-show="tariff_type_select == 3" class="form-group col-md-6">
+                                <label for="cheias-time">starting time for full time hours</label>
+
+                                <date-picker style="width:100%" v-model="full_time_hoursTimeTemp" :time-picker-options="{start: '00:00', step: '01:00', end:'23:00'}"
+                                    format="HH:mm" type="time" placeholder="starting hour of full time hours" :disabled-time="getDisabledFullTime"></date-picker>
+
+                            </div>
+                        </div>
+
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">cancel</button>
@@ -190,6 +231,45 @@
                                 <input type="number" class="form-control" id="cheias" placeholder="€/kWh" @input="updateNewTariff('price_full_time_hours', $event)">
                             </div>
                         </div>
+
+                        <hr>
+                        <span v-show="tariff_type_select == 0">choose the type of tariff above to set the hour range of the tariffs</span>
+                        <div class="form-row">
+                            <div v-show="tariff_type_select == 1" class="form-group col-md-12">
+                                <label>a simple tariff encompasses the whole day and as such doesn't need further set up</label>
+                            </div>
+                            <div v-show="tariff_type_select > 1" class="form-group col-md-6">
+                                <label for="vazio-time">starting time for off peak hours</label>
+                                
+                                <date-picker style="width:100%" v-model="off_peak_hoursTimeTemp" :time-picker-options="{start: '00:00', step: '01:00', end:'23:00'}"
+                                    format="HH:mm" type="time" placeholder="starting hour of off peak hours" :disabled-time="getDisabledTimeOffPeak"></date-picker>
+                                    
+
+                            </div>
+                            <div v-show="tariff_type_select == 2" class="form-group col-md-6">
+                                <label for="fora-vazio-time">starting time for outside off-peak hours</label>
+
+                                <date-picker style="width:100%" v-model="outside_off_peak_hoursTimeTemp" :time-picker-options="{start: '00:00', step: '01:00', end:'23:00'}"
+                                    format="HH:mm" type="time" placeholder="starting hour of outside off-peak hours" :disabled-time="getDisabledTimeOutsideOffPeak"></date-picker>
+
+                            </div>
+                            <div v-show="tariff_type_select == 3" class="form-group col-md-6">
+                                <label for="ponta-time">starting time for peak hours</label>
+
+                                <date-picker style="width:100%" v-model="peak_hoursTimeTemp" :time-picker-options="{start: '00:00', step: '01:00', end:'23:00'}"
+                                    format="HH:mm" type="time" placeholder="starting hour of peak hours" :disabled-time="getDisabledPeak"></date-picker>
+
+                            </div>
+                        </div>   
+                        <div class="form-row">                     
+                            <div v-show="tariff_type_select == 3" class="form-group col-md-6">
+                                <label for="cheias-time">starting time for full time hours</label>
+
+                                <date-picker style="width:100%" v-model="full_time_hoursTimeTemp" :time-picker-options="{start: '00:00', step: '01:00', end:'23:00'}"
+                                    format="HH:mm" type="time" placeholder="starting hour of full time hours" :disabled-time="getDisabledFullTime"></date-picker>
+
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">cancel</button>
@@ -205,6 +285,7 @@
 </template>
 
 <script>
+var moment = require('moment');
 export default {
         name: "tarifario",
         mounted() {
@@ -238,7 +319,11 @@ export default {
                     price_outside_off_peak_hours: null,
                     price_peak_hours: null,
                     price_full_time_hours: null,
-                }
+                },
+                off_peak_hoursTimeTemp: null,
+                outside_off_peak_hoursTimeTemp: null,
+                peak_hoursTimeTemp: null,
+                full_time_hoursTimeTemp: null,
             }
         },
         props: {
@@ -247,6 +332,49 @@ export default {
             },
         },
         methods:{
+
+            getDisabledTimeOffPeak: function(date){
+                if (this.tempTariff.tariff_type == 'bi-hourly'){
+                    if(this.outside_off_peak_hoursTimeTemp){
+                        return date.getHours() == this.outside_off_peak_hoursTimeTemp.getHours();
+                    }else{
+                        return null;
+                    }
+                }else{
+                    if (this.tempTariff.tariff_type == 'tri-hourly'){
+                                                
+                        return (this.peak_hoursTimeTemp && this.full_time_hoursTimeTemp) ? date.getHours() == this.peak_hoursTimeTemp.getHours() || date.getHours() == this.full_time_hoursTimeTemp.getHours() :
+                        (this.peak_hoursTimeTemp) ? date.getHours() == this.peak_hoursTimeTemp.getHours() :
+                        (this.full_time_hoursTimeTemp) ? date.getHours() == this.full_time_hoursTimeTemp.getHours() :
+                        null;
+                        
+                    }
+                }
+                return null;
+            },
+
+            getDisabledTimeOutsideOffPeak: function(date){
+                if(this.off_peak_hoursTimeTemp){
+                    return date.getHours() == this.off_peak_hoursTimeTemp.getHours();
+                }else{
+                    return null;
+                }
+            },
+
+            getDisabledPeak: function(date){
+                return (this.off_peak_hoursTimeTemp && this.full_time_hoursTimeTemp) ? date.getHours() == this.off_peak_hoursTimeTemp.getHours() || date.getHours() == this.full_time_hoursTimeTemp.getHours() :
+                (this.off_peak_hoursTimeTemp) ? date.getHours() == this.off_peak_hoursTimeTemp.getHours() :
+                (this.full_time_hoursTimeTemp) ? date.getHours() == this.full_time_hoursTimeTemp.getHours() :
+                null;
+            },
+
+            getDisabledFullTime: function(date){
+                return (this.off_peak_hoursTimeTemp && this.peak_hoursTimeTemp) ? date.getHours() == this.off_peak_hoursTimeTemp.getHours() || date.getHours() == this.peak_hoursTimeTemp.getHours() :
+                (this.off_peak_hoursTimeTemp) ? date.getHours() == this.off_peak_hoursTimeTemp.getHours() :
+                (this.peak_hoursTimeTemp) ? date.getHours() == this.peak_hoursTimeTemp.getHours() :
+                null;
+            },
+
             addTariff: function(){
 
                 if(this.newTariff.contracted_power == null || this.newTariff.daily_power_price == null || this.newTariff.tax == null || this.newTariff.tariff_type == null){
@@ -261,6 +389,18 @@ export default {
                         auxTariff[key] = this.newTariff[key];
                     }
                 }
+
+                if(this.newTariff.tariff_type == "bi-hourly"){
+                    auxTariff['starting_time_off_peak_hours'] = moment(this.off_peak_hoursTimeTemp).format('HH:mm');
+                    auxTariff['starting_time_outside_off_peak_hours'] = moment(this.outside_off_peak_hoursTimeTemp).format('HH:mm');
+                }
+                if(this.newTariff.tariff_type == "tri-hourly"){
+                    auxTariff['starting_time_off_peak_hours'] = moment(this.off_peak_hoursTimeTemp).format('HH:mm');
+                    auxTariff['starting_time_peak_hours'] = moment(this.peak_hoursTimeTemp).format('HH:mm');
+                    auxTariff['starting_time_full_time_hours'] = moment(this.full_time_hoursTimeTemp).format('HH:mm');
+                }
+
+                console.log(auxTariff);
 
                 axios.post(myUrl+"/api/sites/" + this.selectedSite.id + "/tariffs", auxTariff)
                 .then( response => {
@@ -298,6 +438,18 @@ export default {
                         auxTariff[key] = this.tempTariff[key];
                     }
                 }
+
+                if(this.tempTariff.tariff_type == "bi-hourly"){
+                    auxTariff['starting_time_off_peak_hours'] = moment(this.off_peak_hoursTimeTemp).format('HH:mm');
+                    auxTariff['starting_time_outside_off_peak_hours'] = moment(this.outside_off_peak_hoursTimeTemp).format('HH:mm');
+                }
+                if(this.tempTariff.tariff_type == "tri-hourly"){
+                    auxTariff['starting_time_off_peak_hours'] = moment(this.off_peak_hoursTimeTemp).format('HH:mm');
+                    auxTariff['starting_time_peak_hours'] = moment(this.peak_hoursTimeTemp).format('HH:mm');
+                    auxTariff['starting_time_full_time_hours'] = moment(this.full_time_hoursTimeTemp).format('HH:mm');
+                }
+
+                console.log(auxTariff);
 
                 axios.put(myUrl+"/api/sites/" + this.selectedSite.id + "/tariffs", auxTariff)
                 .then( response => {
@@ -393,6 +545,10 @@ export default {
                     price_peak_hours: null,
                     price_full_time_hours: null,
                 }
+                $('#potencia').val("");
+                $('#preço').val("");
+                $('#imposto').val("");
+
                 $('#preco-simples').val("");
                 $('#vazio').val("");
                 $('#fora-vazio').val("");
@@ -402,6 +558,10 @@ export default {
                 this.tariff_type_select = 0;
                 this.selectedSite = {name: null};
 
+                this.off_peak_hoursTimeTemp= null;
+                this.outside_off_peak_hoursTimeTemp= null;
+                this.peak_hoursTimeTemp= null;
+                this.full_time_hoursTimeTemp= null;
             },
 
             setupTempTariff: function(site){
@@ -434,6 +594,30 @@ export default {
                 $('#fora-vazio-update').val(this.tempTariff.price_outside_off_peak_hours);
                 $('#ponta-update').val(this.tempTariff.price_peak_hours);
                 $('#cheias-update').val(this.tempTariff.price_full_time_hours);
+
+                let auxDate;
+                if(this.tempTariff.tariff_type == "bi-hourly"){
+                    auxDate = new Date(0, 0, 0, site.tariff['starting_time_off_peak_hours'].substring(0,2), site.tariff['starting_time_off_peak_hours'].substring(4,5), 0, 0);
+                    console.log('auxDate', auxDate);
+                    this.off_peak_hoursTimeTemp = auxDate;
+
+                    auxDate = new Date(0, 0, 0, site.tariff['starting_time_outside_off_peak_hours'].substring(0,2), site.tariff['starting_time_outside_off_peak_hours'].substring(4,5),0 ,0);
+                    console.log('auxDate', auxDate);
+                    this.outside_off_peak_hoursTimeTemp = auxDate;
+                }
+                if(this.tempTariff.tariff_type == "tri-hourly"){
+                    auxDate = new Date(0, 0, 0, site.tariff['starting_time_off_peak_hours'].substring(0,2), site.tariff['starting_time_off_peak_hours'].substring(4,5), 0, 0);
+                    console.log('auxDate', auxDate);
+                    this.off_peak_hoursTimeTemp = auxDate;
+
+                    auxDate = new Date(0, 0, 0, site.tariff['starting_time_peak_hours'].substring(0,2), site.tariff['starting_time_peak_hours'].substring(4,5),0 ,0);
+                    console.log('auxDate', auxDate);
+                    this.peak_hoursTimeTemp = auxDate;
+
+                    auxDate = new Date(0, 0, 0, site.tariff['starting_time_full_time_hours'].substring(0,2), site.tariff['starting_time_full_time_hours'].substring(4,5),0 ,0);
+                    console.log('auxDate', auxDate);
+                    this.full_time_hoursTimeTemp = auxDate;
+                }
                 
             },
 
@@ -449,6 +633,10 @@ export default {
                     price_peak_hours: null,
                     price_full_time_hours: null,
                 }
+                $('#potencia-update').val("");
+                $('#preço-update').val("");
+                $('#imposto-update').val("");
+                
                 $('#preco-simples-update').val("");
                 $('#vazio-update').val("");
                 $('#fora-vazio-update').val("");
@@ -457,6 +645,11 @@ export default {
 
                 this.tariff_type_select = 0;
                 this.selectedSite = {name: null};
+
+                this.off_peak_hoursTimeTemp= null;
+                this.outside_off_peak_hoursTimeTemp= null;
+                this.peak_hoursTimeTemp= null;
+                this.full_time_hoursTimeTemp= null;
             },
 
             removeTariff(){

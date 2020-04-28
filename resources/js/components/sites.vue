@@ -141,6 +141,8 @@ export default {
         },
         data: function(){
             return {
+                valueTime: null,
+                
                 errorMessages: ['you have no devices linked to this site', 'no readings were found on the selected days'],
                 errorMessageIndex: 0,
 

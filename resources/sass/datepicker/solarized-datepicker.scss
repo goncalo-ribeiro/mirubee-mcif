@@ -17,6 +17,10 @@
   }
 }
 
+.mx-datepicker-popup{
+  z-index:9999 !important;
+}
+
 /*
 .datepicker {
   cursor: default;

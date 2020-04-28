@@ -25,6 +25,11 @@ class CreateTariffsTable extends Migration
             $table->double('price_outside_off_peak_hours')->nullable();            //  [note: "preço em €/kWh das horas fora de vazio no tarifario bi horario"]
             $table->double('price_peak_hours')->nullable();                        //  [note: "preço em €/kWh das horas de ponta no tarifario tri horario"]
             $table->double('price_full_time_hours')->nullable();                   //  [note: "preço em €/kWh das horas cheias no tarifario tri horario"]
+
+            $table->string('starting_time_off_peak_hours')->nullable();
+            $table->string('starting_time_outside_off_peak_hours')->nullable();
+            $table->string('starting_time_peak_hours')->nullable();
+            $table->string('starting_time_full_time_hours')->nullable();
         });
     }
 

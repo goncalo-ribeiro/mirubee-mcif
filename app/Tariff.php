@@ -16,6 +16,10 @@ class Tariff extends Model
         'price_outside_off_peak_hours',
         'price_peak_hours',
         'price_full_time_hours',
+        'starting_time_off_peak_hours',
+        'starting_time_outside_off_peak_hours',
+        'starting_time_peak_hours',
+        'starting_time_full_time_hours',
     ];
 
     public function site()

@@ -30,10 +30,15 @@ class Tariff extends FormRequest
             'tariff_type' => 'required | string | in:simple,bi-hourly,tri-hourly',
 
             'price_simple' => 'required_if:tariff_type,simple | nullable | numeric',
-            'price_off_peak_hours' => 'required_unless:tariff_type,simple |nullable| numeric',
+            'price_off_peak_hours' => 'required_unless:tariff_type,simple|nullable| numeric',
             'price_outside_off_peak_hours' => 'required_if:tariff_type,bi-hourly |nullable| numeric',
             'price_peak_hours' => 'required_if:tariff_type,tri-hourly |nullable| numeric',
             'price_full_time_hours' => 'required_if:tariff_type,tri-hourly |nullable| numeric',
+
+            'starting_time_off_peak_hours' => 'required_unless:tariff_type,simple|nullable|date_format:H:i',
+            'starting_time_outside_off_peak_hours' => 'required_if:tariff_type,bi-hourly|nullable|date_format:H:i|different:starting_time_off_peak_hours',
+            'starting_time_peak_hours' => 'required_if:tariff_type,tri-hourly|nullable| date_format:H:i|different:starting_time_off_peak_hours,starting_time_full_time_hours',
+            'starting_time_full_time_hours' => 'required_if:tariff_type,tri-hourly|nullable| date_format:H:i|different:starting_time_off_peak_hours,starting_time_peak_hours',
         ];
     }
 
@@ -44,6 +49,11 @@ class Tariff extends FormRequest
             'price_off_peak_hours' => 'price of off peak hours',
             'price_peak_hours' => 'price of peak hours',
             'price_full_time_hours' => 'price of full time hours',
+
+            'starting_time_off_peak_hours' => 'starting time of off peak hours',
+            'starting_time_outside_off_peak_hours' => 'starting time of outside_off peak hours',
+            'starting_time_peak_hours' => 'starting time of peak hours',
+            'starting_time_full_time_hours' => 'starting time of full time hours',
         ];
     }
 

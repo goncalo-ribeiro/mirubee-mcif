@@ -9,6 +9,7 @@ use App\Tariff;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 use App\Http\Requests\Tariff as TariffRequest;
 
@@ -149,12 +150,20 @@ class SiteController extends Controller
 
     public function getReadings(Request $request, $siteId, $start, $end){
 
-        if(($end - $start) >  604800){
+        if(($end - $start) >  3456000){
             $errorObject = (object) ['time' => ["The range of dates is too big"]];
             return response()->json(['errors' => $errorObject], 400);
         }
 
-        $readings = ReadingThreePhase::whereBetween('time', [$start, $end])->orderBy('time', 'asc')->get();
+        $site = Site::find($siteId);
+        $user = Auth::user();
+
+        if($site->user->id != $user->id){
+            return response()->json(['errors' => ['user' => ["this site doesn't belong to the user"]]], 400);
+        }
+
+        $readings = $site->readingsThreePhase->whereBetween('time', [$start, $end])->sortBy('time')->values();
+        //Log::debug($readings);
 
         return response()->json(['message' => 'readings successfully retrieved', 'readings' => $readings, 'params' => [$start, $end]], 200);
         
@@ -208,7 +217,7 @@ class SiteController extends Controller
             return response()->json(['errors' => ['user' => ["this site doesn't belong to the user"]]], 400);
         }
 
-        $tariff = new Tariff;
+        $tariff = $site->tariff;
 
         $request->validated();
 
