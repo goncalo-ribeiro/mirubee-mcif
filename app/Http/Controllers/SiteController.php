@@ -197,6 +197,8 @@ class SiteController extends Controller
 
         $tariff = new Tariff;
 
+        Log::debug($request);
+
         $request->validated();
 
         $tariff->fill($request->all());
@@ -216,6 +218,8 @@ class SiteController extends Controller
         if($site->user->id != $user->id){
             return response()->json(['errors' => ['user' => ["this site doesn't belong to the user"]]], 400);
         }
+
+        Log::debug($request);
 
         $tariff = $site->tariff;
 

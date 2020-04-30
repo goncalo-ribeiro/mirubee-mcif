@@ -81,20 +81,20 @@ export default {
                 }
             },
         },
-        /*
+        
         activated(){
             console.log('Component activated')
-            if(this.years.length){
-                this.activeYear = this.years[0];
-                this.$router.push({ name: 'reportsList', params: { year: this.years[0], months: this.monthsByYear[this.years[0]]}}).catch(err => 
-                {
-                    console.log(err)
-                });
-            }              
+            // if(this.years.length){
+            //     this.activeYear = this.years[0];
+            //     this.$router.push({ name: 'reportsList', params: { year: this.years[0], months: this.monthsByYear[this.years[0]]}}).catch(err => 
+            //     {
+            //         console.log(err)
+            //     });
+            // }              
         },
-        updated(){
-            console.log('Component updated')
-        },*/
+        // updated(){
+        //     console.log('Component updated')
+        // },
         data: function(){
             return {
                 activeYear: null,

@@ -52,7 +52,7 @@
                                 </div>
                                     -->
                                 
-                                <div id="echart" style="height:60vh" class="m-a">
+                                <div id="echart" style="height:60vh; width: 100%; min-height: 400px;" class="m-a">
                                 </div>
                                 <div>
                                     <label class="ml-5" for="serie1-checkbox">
@@ -133,11 +133,17 @@ export default {
                 $('#update-site-name').focus();
             });
             this.setupEchartGraph();
+            $(window).on('resize', () => {
+                if(this.eChart != null && this.eChart != undefined){
+                    this.eChart.resize();
+                }
+            });
         },
         activated(){
             console.log('Component activated.');
             console.log(' * * * * * setup activated * * * * * *');
-            this.setup(); 
+            this.setup();
+            this.eChart.resize();
         },
         data: function(){
             return {
@@ -309,16 +315,13 @@ export default {
                     this.errorMessageIndex = 0;
                     return;
                 }
-                let start = this.datesPicked[0]
-                start.setHours(0,0,0,0);
 
-                let end = this.datesPicked[1]
-                end.setHours(23,59,59,999);
+                let start = Date.UTC(this.datesPicked[0].getFullYear(), this.datesPicked[0].getMonth(), this.datesPicked[0].getDate(),0,0,0) / 1000;
+                let end = Date.UTC(this.datesPicked[1].getFullYear(), this.datesPicked[1].getMonth(), this.datesPicked[1].getDate(),23,59,59) / 1000;
 
                 console.log(start, end)
-                console.log(start.getTime(), end.getTime());
 
-                axios.get(myUrl + '/api/sites/' + this.siteId + '/readings/' + start.getTime()/1000 + '/' + end.getTime()/1000 )
+                axios.get(myUrl + '/api/sites/' + this.siteId + '/readings/' + start + '/' + end )
                 .then( success => {
                     this.randomizeReadingsOfOtherPhases(success.data.readings);
                     this.readings = success.data.readings;

@@ -98,25 +98,25 @@
                         <div class="form-row">
                             <div v-show="tariff_type_select == 1" class="form-group col-md-6">
                                 <label for="preco-simples">consumption price (€/kWh)</label>
-                                <input autofocus type="number" class="form-control" id="preco-simples-update" placeholder="€/kWh" @input="updateExistingTariff('price_simple', $event)">
+                                <input autofocus type="text" class="form-control" id="preco-simples-update" placeholder="€/kWh" @input="updateExistingTariff('price_simple', $event)">
                             </div>
                             <div v-show="tariff_type_select > 1" class="form-group col-md-6">
                                 <label for="vazio">consumption price during off-peak hours (€/kWh)</label>
-                                <input type="number" class="form-control" id="vazio-update" placeholder="€/kWh" @input="updateExistingTariff('price_off_peak_hours', $event)">
+                                <input type="text" class="form-control" id="vazio-update" placeholder="€/kWh" @input="updateExistingTariff('price_off_peak_hours', $event)">
                             </div>
                             <div v-show="tariff_type_select == 2" class="form-group col-md-6">
                                 <label for="fora-vazio">consumption price outside off-peak hours (€/kWh)</label>
-                                <input type="number" class="form-control" id="fora-vazio-update" placeholder="€/kWh" @input="updateExistingTariff('price_outside_off_peak_hours', $event)">
+                                <input type="text" class="form-control" id="fora-vazio-update" placeholder="€/kWh" @input="updateExistingTariff('price_outside_off_peak_hours', $event)">
                             </div>
                             <div v-show="tariff_type_select == 3" class="form-group col-md-6">
                                 <label for="ponta">consumption price during peak hours (€/kWh)</label>
-                                <input type="number" class="form-control" id="ponta-update" placeholder="€/kWh" @input="updateExistingTariff('price_peak_hours', $event)">
+                                <input type="text" class="form-control" id="ponta-update" placeholder="€/kWh" @input="updateExistingTariff('price_peak_hours', $event)">
                             </div>
                         </div>   
                         <div class="form-row">                     
                             <div v-show="tariff_type_select == 3" class="form-group col-md-6">
                                 <label for="cheias">consumption price during full time (€/kWh)</label>
-                                <input type="number" class="form-control" id="cheias-update" placeholder="€/kWh" @input="updateExistingTariff('price_full_time_hours', $event)">
+                                <input type="text" class="form-control" id="cheias-update" placeholder="€/kWh" @input="updateExistingTariff('price_full_time_hours', $event)">
                             </div>
                         </div>
 
@@ -210,25 +210,25 @@
                         <div class="form-row">
                             <div v-if="tariff_type_select == 1" class="form-group col-md-6">
                                 <label for="preco-simples">consumption price (€/kWh)</label>
-                                <input autofocus type="number" class="form-control" id="preco-simples" placeholder="€/kWh" @input="updateNewTariff('price_simple', $event)">
+                                <input autofocus type="text" class="form-control" id="preco-simples" placeholder="€/kWh" @input="updateNewTariff('price_simple', $event)">
                             </div>
                             <div v-if="tariff_type_select > 1" class="form-group col-md-6">
                                 <label for="vazio">consumption price during off-peak hours (€/kWh)</label>
-                                <input type="number" class="form-control" id="vazio" placeholder="€/kWh" @input="updateNewTariff('price_off_peak_hours', $event)">
+                                <input type="text" class="form-control" id="vazio" placeholder="€/kWh" @input="updateNewTariff('price_off_peak_hours', $event)">
                             </div>
                             <div v-if="tariff_type_select == 2" class="form-group col-md-6">
                                 <label for="fora-vazio">consumption price outside off-peak hours (€/kWh)</label>
-                                <input type="number" class="form-control" id="fora-vazio" placeholder="€/kWh" @input="updateNewTariff('price_outside_off_peak_hours', $event)">
+                                <input type="text" class="form-control" id="fora-vazio" placeholder="€/kWh" @input="updateNewTariff('price_outside_off_peak_hours', $event)">
                             </div>
                             <div v-if="tariff_type_select == 3" class="form-group col-md-6">
                                 <label for="ponta">consumption price during peak hours (€/kWh)</label>
-                                <input type="number" class="form-control" id="ponta" placeholder="€/kWh" @input="updateNewTariff('price_peak_hours', $event)">
+                                <input type="text" class="form-control" id="ponta" placeholder="€/kWh" @input="updateNewTariff('price_peak_hours', $event)">
                             </div>
                         </div>   
                         <div class="form-row">                     
                             <div v-if="tariff_type_select == 3" class="form-group col-md-6">
                                 <label for="cheias">consumption price during full time (€/kWh)</label>
-                                <input type="number" class="form-control" id="cheias" placeholder="€/kWh" @input="updateNewTariff('price_full_time_hours', $event)">
+                                <input type="text" class="form-control" id="cheias" placeholder="€/kWh" @input="updateNewTariff('price_full_time_hours', $event)">
                             </div>
                         </div>
 
@@ -389,12 +389,23 @@ export default {
                         auxTariff[key] = this.newTariff[key];
                     }
                 }
-
+                
+                if(this.newTariff.tariff_type == "simple"){
+                    auxTariff['starting_time_off_peak_hours'] = null;
+                    auxTariff['starting_time_outside_off_peak_hours'] = null;
+                    auxTariff['starting_time_peak_hours'] = null;
+                    auxTariff['starting_time_full_time_hours'] = null;
+                }
                 if(this.newTariff.tariff_type == "bi-hourly"){
+                    auxTariff['starting_time_peak_hours'] = null;
+                    auxTariff['starting_time_full_time_hours'] = null;
+
                     auxTariff['starting_time_off_peak_hours'] = moment(this.off_peak_hoursTimeTemp).format('HH:mm');
                     auxTariff['starting_time_outside_off_peak_hours'] = moment(this.outside_off_peak_hoursTimeTemp).format('HH:mm');
                 }
                 if(this.newTariff.tariff_type == "tri-hourly"){
+                    auxTariff['starting_time_outside_off_peak_hours'] = null;
+
                     auxTariff['starting_time_off_peak_hours'] = moment(this.off_peak_hoursTimeTemp).format('HH:mm');
                     auxTariff['starting_time_peak_hours'] = moment(this.peak_hoursTimeTemp).format('HH:mm');
                     auxTariff['starting_time_full_time_hours'] = moment(this.full_time_hoursTimeTemp).format('HH:mm');
@@ -439,11 +450,22 @@ export default {
                     }
                 }
 
+                if(this.tempTariff.tariff_type == "simple"){
+                    auxTariff['starting_time_off_peak_hours'] = null;
+                    auxTariff['starting_time_outside_off_peak_hours'] = null;
+                    auxTariff['starting_time_peak_hours'] = null;
+                    auxTariff['starting_time_full_time_hours'] = null;
+                }
                 if(this.tempTariff.tariff_type == "bi-hourly"){
+                    auxTariff['starting_time_peak_hours'] = null;
+                    auxTariff['starting_time_full_time_hours'] = null;
+
                     auxTariff['starting_time_off_peak_hours'] = moment(this.off_peak_hoursTimeTemp).format('HH:mm');
                     auxTariff['starting_time_outside_off_peak_hours'] = moment(this.outside_off_peak_hoursTimeTemp).format('HH:mm');
                 }
                 if(this.tempTariff.tariff_type == "tri-hourly"){
+                    auxTariff['starting_time_outside_off_peak_hours'] = null;
+
                     auxTariff['starting_time_off_peak_hours'] = moment(this.off_peak_hoursTimeTemp).format('HH:mm');
                     auxTariff['starting_time_peak_hours'] = moment(this.peak_hoursTimeTemp).format('HH:mm');
                     auxTariff['starting_time_full_time_hours'] = moment(this.full_time_hoursTimeTemp).format('HH:mm');
