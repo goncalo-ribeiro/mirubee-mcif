@@ -48,6 +48,8 @@ const alerts = Vue.component('alerts', require('./components/alerts.vue').defaul
 const reports = Vue.component('reports', require('./components/reports.vue').default);
 const reportsList = Vue.component('reportsList', require('./components/reports/reportsList.vue').default);
 const monthlyReport = Vue.component('monthlyReport', require('./components/reports/monthlyReport.vue').default);
+const mfaSetup = Vue.component('mfaSetup', require('./components/mfa/mfaSetup.vue').default);
+const mfaSetupEmail = Vue.component('mfaSetupEmail', require('./components/mfa/setup/email.vue').default);
 
 /*
 const echartString =  Vue.component('echartString', require('./components/charts/echartString.vue').default);
@@ -86,6 +88,8 @@ const routes = [
                     { path: '/reports/:year/:month', component: monthlyReport, name:'monthlyReport', props: true}
                 ]
             },
+            { path: '/mfa/setup', component: mfaSetup, name:'mfaSetup', props:true},
+            { path: '/mfa/setup/email', component: mfaSetupEmail, name:'mfaSetupEmail', props:true},
         ]
     },
     /*

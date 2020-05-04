@@ -61,7 +61,11 @@ class User extends Authenticatable
     public function readings()
     {  
         return $this->hasManyThrough('App\ReadingThreePhase', 'App\Device');
-    
+    }
+
+    public function mfaMethod()
+    {
+        return $this->hasOne('App\MfaMethod');
     }
 
     //o argumento $nickname devia ter outro nome, pois caso a função não encontre o utilizador com o nickname tenta faze-lo com email

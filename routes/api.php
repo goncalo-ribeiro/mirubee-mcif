@@ -40,6 +40,12 @@ Route::middleware('auth:api')->get('/alerts', 'AlertController@index');
 Route::middleware('auth:api')->post('/alerts', 'AlertController@store');
 Route::middleware('auth:api')->put('/alerts', 'AlertController@update');
 
+// mfa
+Route::middleware('auth:api')->post('/mfa/setup/activationEmail', 'MfaMethodController@sendActivationEmail');
+Route::middleware('auth:api')->post('/mfa/setup/activateEmail', 'MfaMethodController@activateEmail');
+Route::middleware('auth:api')->post('/mfa/setup/email', 'MfaMethodController@enableEmail');
+Route::middleware('auth:api')->delete('/mfa/setup/email', 'MfaMethodController@disableEmail');
+
 // read notifications
 Route::middleware('auth:api')->put('alerts/{alertId}/notifications', 'AlertController@readNotifications');
 Route::middleware('auth:api')->delete('alerts/notifications/{notificationId}', 'AlertController@deleteNotification');

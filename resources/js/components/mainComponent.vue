@@ -76,9 +76,9 @@
                                 <a class="dropdown-item" href="" onclick="">
                                     logout
                                 </a>
-                                <a class="dropdown-item" href="" onclick="">
-                                    editar conta
-                                </a>
+                                <router-link class="dropdown-item" :to="{ name: 'mfaSetup', params: { user: user} }">
+                                    mfa setup
+                                </router-link>
                             </div>
                         </li>
                     </ul>
@@ -96,7 +96,8 @@
                         @tariff-deleted="tariffDeleted"
                         @notifications-read="readNotifications"
                         @delete-notification="deleteNotification"
-                        @delete-alert-notifications="deleteAlertNotifications">
+                        @delete-alert-notifications="deleteAlertNotifications"
+                        @user-updated="userUpdated">
                     </router-view>
                 </keep-alive>
             </transition>
@@ -294,6 +295,9 @@ import { get } from 'http';
                 let index = this.userSites.findIndex( element => element.id === siteID)
 
                 this.userSites[index].tariff = null;
+            },
+            userUpdated(user){
+                this.user = user;
             },
 
             readNotifications(alertId){
