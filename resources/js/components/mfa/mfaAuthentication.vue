@@ -69,7 +69,10 @@ export default {
                         });
                         break;
                     case 'google':
-                        
+                        this.$router.push({ name: 'mfaAuthenticationGoogle', params: { user: this.user,}}).catch(err => 
+                        {
+                            console.log(err)
+                        });                        
                         break;
                     case 'u2f':
                         

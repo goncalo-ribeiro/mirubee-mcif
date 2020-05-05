@@ -8,16 +8,16 @@
                     <hr class="my-4">
                     <div class="form-group">
                         <div class="input-group mb-3">
-                            <input required autofocus type="email" v-model="email" class="form-control" id="emailInput" placeholder="email" v-on:keyup.enter="registerClick">
+                            <input autofocus v-model="email" class="form-control" id="emailInput" placeholder="email" v-on:keyup.enter="registerClick">
                         </div>
                         <div class="input-group mb-3">
-                            <input required type="text" v-model="name" class="form-control" id="nameInput" placeholder="name" v-on:keyup.enter="registerClick">
+                            <input type="text" v-model="name" class="form-control" id="nameInput" placeholder="name" v-on:keyup.enter="registerClick">
                         </div>
                         <div class="input-group mb-3">
-                            <input required type="password" v-model="password" class="form-control" id="passwordInput" placeholder="password" v-on:keyup.enter="registerClick"> 
+                            <input type="password" v-model="password" class="form-control" id="passwordInput" placeholder="password" v-on:keyup.enter="registerClick"> 
                         </div>
                         <div class="input-group mb-3">
-                            <input required type="password" v-model="passwordConfirmation" class="form-control" id="passwordConfirmationInput" placeholder="password confirmation" v-on:keyup.enter="registerClick">
+                            <input type="password" v-model="passwordConfirmation" class="form-control" id="passwordConfirmationInput" placeholder="password confirmation" v-on:keyup.enter="registerClick">
                         </div>
                         <div class="input-group mb-3">
                             <button type="button" class="btn btn-primary" @click.prevent="registerClick">register</button>
@@ -42,8 +42,12 @@
                 registerFailedMsg: undefined,
             }
         },
+        activated(){
+            this.clearInputFields();
+        },
         methods:{
             registerClick() {
+                console.log('register click')
                 this.registerFailedMsg = this.validateFields();
 
                 if(this.registerFailedMsg){
@@ -64,7 +68,8 @@
                         //Event.$emit('register-success', this.email);
                         this.clearInputFields();
                         //this.$emit('register-success');
-                        Vue.toasted.show('Successfully Registered, check your email to activate your account', { icon : 'check', type: 'success'});
+                        Vue.toasted.show('Successfully Registered', { icon : 'check', type: 'success'});
+                        this.$router.push('/login')
                     })
                     .catch(error => {
                         console.log("Server Denied new User: ");

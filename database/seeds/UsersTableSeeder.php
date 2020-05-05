@@ -26,6 +26,14 @@ class UsersTableSeeder extends Seeder
         }
         $bar->finish();
         $this->command->info('');
+
+        $users =  App\User::all();
+        foreach ($users as $user) {
+            $mfaMethod = new  App\MfaMethod;
+            $mfaMethod->user_id = $user->id;
+            $mfaMethod->save();
+        }
+        $this->command->info('Populated MfaMethodsTable.');
     }
 
     private function fakeUser(Faker\Generator $faker)

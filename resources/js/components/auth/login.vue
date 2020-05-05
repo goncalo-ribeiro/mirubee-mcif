@@ -8,10 +8,10 @@
                     <hr class="my-4">
                     <div class="form-group">
                         <div class="input-group mb-3">
-                            <input required autofocus type="email" v-model="email" class="form-control" id="emailInput" placeholder="email" v-on:keyup.enter="loginClick">
+                            <input autofocus type="email" v-model="email" class="form-control" id="emailInput" placeholder="email" v-on:keyup.enter="loginClick">
                         </div>
                         <div class="input-group mb-3">
-                            <input required type="password" v-model="password" class="form-control" id="passwordInput" placeholder="password" v-on:keyup.enter="loginClick">
+                            <input type="password" v-model="password" class="form-control" id="passwordInput" placeholder="password" v-on:keyup.enter="loginClick">
                         </div>
                         <div class="input-group mb-3">
                             <button type="button" class="btn btn-primary" @click.prevent="loginClick">login</button>
@@ -32,6 +32,9 @@
                 email: undefined,
                 password: undefined,
             }
+        },
+        activated(){
+            this.clearInputFields();
         },
         methods:{
             loginClick() {
@@ -86,6 +89,10 @@
                     isValid = false;
                 }
                 return isValid;
+            },
+            clearInputFields(){
+                this.email = '';
+                this.password = '';
             },
         },
         mounted() {

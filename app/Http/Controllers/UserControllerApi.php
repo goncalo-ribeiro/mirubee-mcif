@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Http\Request;
+use App\MfaMethod;
 
 use App\Http\Resources\Users as UserResource;
 
@@ -25,6 +26,13 @@ class UserControllerApi extends Controller
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
+        $user->email_verified_at = now();
+        $user->remember_token = \Str::random(10);
+        $user->save();
+
+        $mfaMethod = new MfaMethod;
+        $mfaMethod->user_id = $user->id;
+        $mfaMethod->save();
         $jsonSuccess=response()->json('Registered', 200);
         return $jsonSuccess;
     }

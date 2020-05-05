@@ -53,6 +53,11 @@ Route::middleware('auth:api')->delete('/mfa/setup/email', 'MfaMethodController@d
 Route::middleware('auth:api')->post('/mfa/auth/email', 'MfaMethodController@authenticateThroughEmail');
 Route::middleware('auth:api')->post('/mfa/auth/email/code', 'MfaMethodController@sendAuthenticationEmail');
 
+Route::middleware('auth:api')->post('/mfa/setup/activateGoogle', 'MfaMethodController@activateGoogle');
+Route::middleware('auth:api')->post('/mfa/setup/google', 'MfaMethodController@enableGoogle');
+Route::middleware('auth:api')->delete('/mfa/setup/google', 'MfaMethodController@disableGoogle');
+Route::middleware('auth:api')->post('/mfa/auth/google', 'MfaMethodController@authenticateThroughGoogle');
+
 // read notifications
 Route::middleware('auth:api')->put('alerts/{alertId}/notifications', 'AlertController@readNotifications');
 Route::middleware('auth:api')->delete('alerts/notifications/{notificationId}', 'AlertController@deleteNotification');

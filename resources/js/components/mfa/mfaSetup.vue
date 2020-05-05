@@ -98,7 +98,14 @@ export default {
             },
             clickCheckboxGoogle(evt, method) {
                 console.log('clickCheckboxGoogle(evt, method)');
-
+                if(this.myUser.mfaMethods.google){
+                    this.disableGoogleMFA();
+                }else{
+                    this.$router.push({ name: 'mfaSetupGoogle', params: { user: this.myUser,}}).catch(err => 
+                    {
+                        console.log(err)
+                    });
+                }
             },
             clickCheckboxU2f(evt, method) {
                 console.log('clickCheckboxU2f(evt, method)');
@@ -156,7 +163,30 @@ export default {
                 })
             },
 
+            disableGoogleMFA(){
+                console.log('disable Google')
+                axios.delete(myUrl+"/api/mfa/setup/google")
+                .then( response => {
+                    console.log(response.data);
+                    Vue.toasted.show(response.data.message, { icon : 'check', type: 'success'});
 
+                    this.$emit('user-updated', response.data.user);
+                    this.myUser = response.data.user;
+                    $('#google-setup-check').prop('checked', false);
+                     
+                })
+                .catch(error => {
+                    console.log(error.response);
+                
+                    let errors = error.response.data.errors;
+
+                    for (let key in errors){
+                        errors[key].forEach(err => 
+                            Vue.toasted.show(err, { icon : 'cancel', type: 'error'})
+                        );
+                    }
+                })
+            }
 
         },
     }

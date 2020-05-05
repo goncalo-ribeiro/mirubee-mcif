@@ -39,7 +39,7 @@ class CreateMfaMethodsTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
 
-        $this->populate();
+        //$this->populate();   já foi criado um seeder especifico (MfaMethodsSeeder)
     }
 
     public function populate()

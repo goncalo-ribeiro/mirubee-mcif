@@ -73,12 +73,12 @@
                             </a>
 
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="" onclick="">
-                                    logout
-                                </a>
                                 <router-link class="dropdown-item" :to="{ name: 'mfaSetup', params: { user: user} }">
                                     mfa setup
                                 </router-link>
+                                <a class="dropdown-item" href="" onclick="">
+                                    logout
+                                </a>
                             </div>
                         </li>
                     </ul>
@@ -297,6 +297,7 @@
                 this.userSites[index].tariff = null;
             },
             userUpdated(user){
+                console.log('user-updated event')
                 this.user = user;
             },
 
