@@ -50,6 +50,8 @@ const reportsList = Vue.component('reportsList', require('./components/reports/r
 const monthlyReport = Vue.component('monthlyReport', require('./components/reports/monthlyReport.vue').default);
 const mfaSetup = Vue.component('mfaSetup', require('./components/mfa/mfaSetup.vue').default);
 const mfaSetupEmail = Vue.component('mfaSetupEmail', require('./components/mfa/setup/email.vue').default);
+const mfaAuthentication = Vue.component('mfaAuthentication', require('./components/mfa/mfaAuthentication.vue').default);
+const mfaAuthenticationEmail = Vue.component('mfaAuthenticationEmail', require('./components/mfa/auth/email.vue').default);
 
 /*
 const echartString =  Vue.component('echartString', require('./components/charts/echartString.vue').default);
@@ -74,6 +76,8 @@ const routes = [
     { path: '/login', component: login },
     { path: '/register', component: register },
     { path: '/example', component: example },
+    { path: '/mfa/authentication', component: mfaAuthentication, name:'mfaAuthentication', props:true},
+    { path: '/mfa/authentication/email', component: mfaAuthenticationEmail, name:'mfaAuthenticationEmail', props:true},
     { path: '/', component: mainComponent,
         children: [
             { path: '/sites/retriever', component: siteRetriever, name: 'siteRetriever'},

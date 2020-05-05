@@ -10,7 +10,7 @@
                     <div class="card-body" >
 
                         <p>you need to ensure you have access to the email account first, an email with a secret code was sent to your account in order to do so.</p>
-                        <p>please enter the sent code in the field below:</p>
+                        <p>please enter the code in the field below:</p>
 
                         <div class="form-row">
                             <div class=" col-md-3">

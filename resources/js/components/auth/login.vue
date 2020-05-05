@@ -47,7 +47,24 @@
                 .then(success => {
                     console.log("Success Login");
                     Vue.toasted.show('Successfully logged in', { icon : 'check', type: 'success'});
-                    this.$router.push({ name: 'siteRetriever'})
+                    
+                    // mfa
+                    let mfa = this.$auth.user.mfaMethods;
+                    console.log(mfa.google, mfa.u2f, mfa.email, mfa.sqrl, mfa.google || mfa.u2f || mfa.email || mfa.sqrl)
+                    if(mfa.google || mfa.u2f || mfa.email || mfa.sqrl){
+                        console.log('mfa activated')
+                        if(mfa.authenticated){
+                            console.log('mfa authenticated')
+                            this.$router.push({ name: 'siteRetriever'})
+                        }else{
+                            console.log('mfa unauthenticated')
+                            this.$router.push({ name: 'mfaAuthentication',  params: { user: this.$auth.user,}})
+                        }
+                    }else{
+                        console.log('mfa not activated')
+                        this.$router.push({ name: 'siteRetriever'})
+                    }
+
                 })
                 .catch( error => {
                     console.log("Auth login catch: ", error);

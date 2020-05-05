@@ -137,7 +137,7 @@
 
 <script>
     import Auth from './auth/auth.js';
-import { get } from 'http';
+    import { get } from 'http';
 
     export default {
         mounted() {

@@ -8,17 +8,15 @@
                     </div>
 
                     <div class="card-body" >
-
                         <div class="list-group">
-                                <a v-for="method in activationMethods" :key="method.formName" class="list-group-item clearfix">
-                                    {{method.formName}}
-                                    <span style="float: right!important;">
-                                        <div class="form-check">
-                                            <input :id="method.idName" class="form-check-input"  @click.prevent="clickCheckbox($event, method)" type="checkbox">
-                                        </div>
-                                    </span>
-                                </a>
-                            </div>
+                            <a v-for="method in activationMethods" :key="method.formName" class="list-group-item clearfix">
+                                {{method.formName}}
+                                <span style="float: right!important;">
+                                    <div class="form-check">
+                                        <input :id="method.idName" class="form-check-input"  @click.prevent="clickCheckbox($event, method)" type="checkbox">
+                                    </div>
+                                </span>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -32,6 +30,7 @@ export default {
         name: "mfa-setup",
         mounted() {
             console.log('mfa setup component mounted.');
+            
         },
         activated(){
             console.log('mfa setup component activated.');
@@ -56,6 +55,12 @@ export default {
             user: Object,
         },
         computed:{
+        },
+        watch: {
+            user: function (val) {
+                console.log('watch user', val)
+                this.myUser = val
+            }
         },
         methods:{
             clickCheckbox(evt, method){
@@ -153,6 +158,6 @@ export default {
 
 
 
-        }
+        },
     }
 </script>

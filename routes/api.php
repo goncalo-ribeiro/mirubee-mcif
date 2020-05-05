@@ -20,6 +20,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::middleware('multi_factor_authentication:api')->get('/mfa/test', function (Request $request) {
+    return response()->json(['message' => 'mfa OK'], 200);;
+});
+
 Route::middleware('auth:api')->get('/products', 'ProductController@index');
 
 Route::middleware('auth:api')->get('/sites', 'SiteController@index');
@@ -45,6 +49,9 @@ Route::middleware('auth:api')->post('/mfa/setup/activationEmail', 'MfaMethodCont
 Route::middleware('auth:api')->post('/mfa/setup/activateEmail', 'MfaMethodController@activateEmail');
 Route::middleware('auth:api')->post('/mfa/setup/email', 'MfaMethodController@enableEmail');
 Route::middleware('auth:api')->delete('/mfa/setup/email', 'MfaMethodController@disableEmail');
+
+Route::middleware('auth:api')->post('/mfa/auth/email', 'MfaMethodController@authenticateThroughEmail');
+Route::middleware('auth:api')->post('/mfa/auth/email/code', 'MfaMethodController@sendAuthenticationEmail');
 
 // read notifications
 Route::middleware('auth:api')->put('alerts/{alertId}/notifications', 'AlertController@readNotifications');
