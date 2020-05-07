@@ -68,6 +68,11 @@ class User extends Authenticatable
         return $this->hasOne('App\MfaMethod');
     }
 
+    public function u2fAuthenticationMethod() 
+    {
+        return $this->hasOne('App\U2FAuthenticationMethod');
+    }
+
     //o argumento $nickname devia ter outro nome, pois caso a função não encontre o utilizador com o nickname tenta faze-lo com email
     //devia ser chamado de $loginCredential
     /*

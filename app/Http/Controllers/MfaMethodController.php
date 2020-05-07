@@ -91,6 +91,8 @@ class MfaMethodController extends Controller
         if(\Hash::check($request->code, $mfaMethod->email_code))
         {
             if($request->remember){
+                $mfaMethod->authenticated = true;
+                $mfaMethod->save();
                 if(is_null($mfaMethod->remember_mfa_token)){
                     $mfaMethod->remember_mfa_token = \Hash::make(\Str::random(20));
                     $mfaMethod->save();
@@ -152,6 +154,8 @@ class MfaMethodController extends Controller
         $mfaMethod = $user->mfaMethod;
         if($ga->verifyCode(decrypt($mfaMethod->google_code), $request->code, 2))
         {
+            $mfaMethod->authenticated = true;
+            $mfaMethod->save();
             if($request->remember){
                 if(is_null($mfaMethod->remember_mfa_token)){
                     $mfaMethod->remember_mfa_token = \Hash::make(\Str::random(20));
@@ -164,4 +168,19 @@ class MfaMethodController extends Controller
         }
         return response()->json(['errors' => ['google code' => ["wrong one time code"]]], 400);
     }
+
+    public function disableU2F()
+    {
+        $user = Auth::user();
+        $mfaMethod = $user->mfaMethod;
+        
+        $mfaMethod->u2f_code = null;
+        $mfaMethod->save();
+
+        $userU2FAuthMethod = $user->u2fAuthenticationMethod;
+        $userU2FAuthMethod->delete();
+
+        return response()->json(['message' => 'u2f authenticator method disabled', 'user' => new UserResource(Auth::user())], 200);        
+    }
+
 }

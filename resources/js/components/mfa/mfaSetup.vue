@@ -79,7 +79,7 @@ export default {
                         break;
                 }
             },
-
+            
             clickCheckboxEmail(evt, method) {
                 console.log('clickCheckboxEmail(evt, method)');
                 if(this.myUser.mfaMethods.email){
@@ -96,6 +96,8 @@ export default {
                     }
                 }
             },
+            
+            
             clickCheckboxGoogle(evt, method) {
                 console.log('clickCheckboxGoogle(evt, method)');
                 if(this.myUser.mfaMethods.google){
@@ -107,8 +109,17 @@ export default {
                     });
                 }
             },
+
             clickCheckboxU2f(evt, method) {
                 console.log('clickCheckboxU2f(evt, method)');
+                if(this.myUser.mfaMethods.u2f){
+                    this.disableU2FMFA();
+                }else{
+                    this.$router.push({ name: 'mfaSetupU2F', params: { user: this.myUser,}}).catch(err => 
+                    {
+                        console.log(err)
+                    });
+                }
 
             },
             clickCheckboxSqrl(evt, method) {
@@ -173,6 +184,31 @@ export default {
                     this.$emit('user-updated', response.data.user);
                     this.myUser = response.data.user;
                     $('#google-setup-check').prop('checked', false);
+                     
+                })
+                .catch(error => {
+                    console.log(error.response);
+                
+                    let errors = error.response.data.errors;
+
+                    for (let key in errors){
+                        errors[key].forEach(err => 
+                            Vue.toasted.show(err, { icon : 'cancel', type: 'error'})
+                        );
+                    }
+                })
+            },
+
+            disableU2FMFA(){
+                console.log('disable U2F')
+                axios.delete(myUrl+"/api/mfa/setup/u2f")
+                .then( response => {
+                    console.log(response.data);
+                    Vue.toasted.show(response.data.message, { icon : 'check', type: 'success'});
+
+                    this.$emit('user-updated', response.data.user);
+                    this.myUser = response.data.user;
+                    $('#u2f-setup-check').prop('checked', false);
                      
                 })
                 .catch(error => {

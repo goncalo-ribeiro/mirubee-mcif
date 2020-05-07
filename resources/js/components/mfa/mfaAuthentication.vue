@@ -75,7 +75,10 @@ export default {
                         });                        
                         break;
                     case 'u2f':
-                        
+                        this.$router.push({ name: 'mfaAuthenticationU2F', params: { user: this.user,}}).catch(err => 
+                        {
+                            console.log(err)
+                        });                             
                         break;
                     case 'sqrl':
                         

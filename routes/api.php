@@ -57,6 +57,13 @@ Route::middleware('auth:api')->post('/mfa/setup/activateGoogle', 'MfaMethodContr
 Route::middleware('auth:api')->post('/mfa/setup/google', 'MfaMethodController@enableGoogle');
 Route::middleware('auth:api')->delete('/mfa/setup/google', 'MfaMethodController@disableGoogle');
 Route::middleware('auth:api')->post('/mfa/auth/google', 'MfaMethodController@authenticateThroughGoogle');
+Route::middleware('auth:api')->delete('/mfa/setup/u2f', 'MfaMethodController@disableU2F');
+
+//u2f
+Route::middleware('auth:api')->get('/u2f/createArgs', 'U2FController@getCreateArgs');
+Route::middleware('auth:api')->post('/u2f/processCreate', 'U2FController@processCreate');
+Route::middleware('auth:api')->get('/u2f/getArgs', 'U2FController@getGetArgs');
+Route::middleware('auth:api')->post('/u2f/processGet', 'U2FController@processGet');
 
 // read notifications
 Route::middleware('auth:api')->put('alerts/{alertId}/notifications', 'AlertController@readNotifications');

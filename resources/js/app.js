@@ -51,9 +51,11 @@ const monthlyReport = Vue.component('monthlyReport', require('./components/repor
 const mfaSetup = Vue.component('mfaSetup', require('./components/mfa/mfaSetup.vue').default);
 const mfaSetupEmail = Vue.component('mfaSetupEmail', require('./components/mfa/setup/email.vue').default);
 const mfaSetupGoogle = Vue.component('mfaSetupGoogle', require('./components/mfa/setup/google.vue').default);
+const mfaSetupU2F = Vue.component('mfaSetupU2F', require('./components/mfa/setup/u2f.vue').default);
 const mfaAuthentication = Vue.component('mfaAuthentication', require('./components/mfa/mfaAuthentication.vue').default);
 const mfaAuthenticationEmail = Vue.component('mfaAuthenticationEmail', require('./components/mfa/auth/email.vue').default);
 const mfaAuthenticationGoogle = Vue.component('mfaAuthenticationGoogle', require('./components/mfa/auth/google.vue').default);
+const mfaAuthenticationU2F = Vue.component('mfaAuthenticationU2F', require('./components/mfa/auth/u2f.vue').default);
 
 /*
 const echartString =  Vue.component('echartString', require('./components/charts/echartString.vue').default);
@@ -81,6 +83,7 @@ const routes = [
     { path: '/mfa/authentication', component: mfaAuthentication, name:'mfaAuthentication', props:true},
     { path: '/mfa/authentication/email', component: mfaAuthenticationEmail, name:'mfaAuthenticationEmail', props:true},
     { path: '/mfa/authentication/google', component: mfaAuthenticationGoogle, name:'mfaAuthenticationGoogle', props:true},
+    { path: '/mfa/authentication/u2f', component: mfaAuthenticationU2F, name:'mfaAuthenticationU2F', props:true},
     { path: '/', component: mainComponent,
         children: [
             { path: '/sites/retriever', component: siteRetriever, name: 'siteRetriever'},
@@ -98,6 +101,7 @@ const routes = [
             { path: '/mfa/setup', component: mfaSetup, name:'mfaSetup', props:true},
             { path: '/mfa/setup/email', component: mfaSetupEmail, name:'mfaSetupEmail', props:true},
             { path: '/mfa/setup/google', component: mfaSetupGoogle, name:'mfaSetupGoogle', props:true},
+            { path: '/mfa/setup/u2f', component: mfaSetupU2F, name:'mfaSetupU2F', props:true},
         ]
     },
     /*

@@ -1,0 +1,12 @@
+ao autenticar-se o utilizador torna verdadeira a flag authenticated na tabela mfa_methods
+isto leva a que ele se autentique em diferentes dispositivos.
+
+o utilizador deve antes receber um "remember me" token que será guardado numa cookie e sera utilizado para comprovar a autenticidade do seu dispositivo local
+
+
+locais a mudar;
+    - middleware;
+    - auth.js;
+
+
+activar o middleware mfa nas rotas

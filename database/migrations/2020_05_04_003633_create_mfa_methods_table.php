@@ -30,7 +30,8 @@ class CreateMfaMethodsTable extends Migration
             $table->timestamp('email_time')->nullable()->default(null);
     
             $table->string('remember_mfa_token')->nullable();
-
+            $table->boolean('authenticated')->default(false);
+            
             $table->unsignedBigInteger('user_id');
 
         });

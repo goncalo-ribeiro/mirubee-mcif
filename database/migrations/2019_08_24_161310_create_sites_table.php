@@ -16,7 +16,7 @@ class CreateSitesTable extends Migration
         Schema::create('sites', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->timestamps();
-            $table->text('name')->unique();
+            $table->char('name', 100)->unique();
             $table->unsignedBigInteger('user_id');
             $table->text('location')->nullable();
             $table->unsignedBigInteger('tariff_id')->nullable();
