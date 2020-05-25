@@ -166,10 +166,4 @@ export default {
             },
         }
     }
-
-    window.onload = function() {
-        if (location.protocol !== 'https:' && location.host !== 'localhost') {
-            location.href = location.href.replace('http', 'https');
-        }
-    }
 </script>

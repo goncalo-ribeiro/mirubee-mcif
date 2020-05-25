@@ -41,11 +41,6 @@
 </template>
 
 <script>
-    window.onload = function() {
-        if (location.protocol !== 'https:' && location.host !== 'localhost') {
-            location.href = location.href.replace('http', 'https');
-        }
-    }
 export default {
         name: "mfa-u2f-setup",
         mounted() {
