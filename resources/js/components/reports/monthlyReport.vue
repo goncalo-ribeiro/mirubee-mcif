@@ -1001,7 +1001,7 @@ export default {
                 this.yMin = 0;
                 Object.keys(consumptionHashMap).forEach( (key) => {
                     let consumption = consumptionHashMap[key] / 1000;
-                    if (this.yMax < consumption) this.yMax = consumption;
+                    if (this.yMax < Math.round((consumption * tariff.price_simple) * 1000) / 1000) this.yMax = Math.round((consumption * tariff.price_simple) * 1000) / 1000;
 
                     let auxDate = new Date(this.year, this.monthMapper[this.month], key);
                     this.series.push([auxDate,Math.round((consumption * tariff.price_simple) * 1000) / 1000])
@@ -1258,7 +1258,10 @@ export default {
                 Object.keys(consumptionHashMapOffPeak).forEach( (key) => {
                     let consumptionOffPeak = consumptionHashMapOffPeak[key] / 1000;
                     let consumptionOutsideOffPeak = consumptionHashMapOutsideOffPeak[key] / 1000;
-                    if (this.yMax < consumptionOffPeak + consumptionOutsideOffPeak) this.yMax = consumptionOffPeak + consumptionOutsideOffPeak;
+                    if (this.yMax < Math.round((consumptionOffPeak * tariff.price_off_peak_hours) * 1000) / 1000 + Math.round((consumptionOutsideOffPeak * tariff.price_outside_off_peak_hours) * 1000) / 1000){
+
+                        this.yMax = Math.round((consumptionOffPeak * tariff.price_off_peak_hours) * 1000) / 1000 + Math.round((consumptionOutsideOffPeak * tariff.price_outside_off_peak_hours) * 1000) / 1000;
+                    } 
 
                     let auxDate = new Date(this.year, this.monthMapper[this.month], key);
                     this.series.push([auxDate,Math.round((consumptionOffPeak * tariff.price_off_peak_hours) * 1000) / 1000])
@@ -1567,7 +1570,12 @@ export default {
                     let consumptionOffPeak = consumptionHashMapOffPeak[key] / 1000;
                     let consumptionPeak = consumptionHashMapPeak[key] / 1000;
                     let consumptionFullTime = consumptionHashMapFullTime[key] / 1000;
-                    if (this.yMax < consumptionOffPeak + consumptionPeak + consumptionFullTime) this.yMax = consumptionOffPeak + consumptionPeak + consumptionFullTime;
+                    if (this.yMax < Math.round((consumptionOffPeak * tariff.price_off_peak_hours) * 1000) / 1000 +
+                        Math.round((consumptionPeak * tariff.price_peak_hours) * 1000) / 1000 +
+                        Math.round((consumptionFullTime * tariff.price_full_time_hours) * 1000) / 1000){
+
+                        this.yMax = Math.round((consumptionOffPeak * tariff.price_off_peak_hours) * 1000) / 1000 + Math.round((consumptionPeak * tariff.price_peak_hours) * 1000) / 1000 + Math.round((consumptionFullTime * tariff.price_full_time_hours) * 1000) / 1000;
+                    } 
 
                     let auxDate = new Date(this.year, this.monthMapper[this.month], key);
                     this.series.push([auxDate,Math.round((consumptionOffPeak * tariff.price_off_peak_hours) * 1000) / 1000])
