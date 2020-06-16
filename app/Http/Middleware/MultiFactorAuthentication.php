@@ -27,11 +27,14 @@ class MultiFactorAuthentication
         $mfa = $user->mfaMethod;
         Log::debug($mfa);
         
-        if(!is_null($mfa->google_code) || !is_null($mfa->fido_code) || !is_null($mfa->email_code) || !is_null($mfa->sms_code)){
+        if(!is_null($mfa->google_code) || !is_null($mfa->u2f_code) || !is_null($mfa->email_code) || !is_null($mfa->sms_code)){
+            Log::debug('mfa enabled! checking if user is authenticated');
             if(!$mfa->authenticated){
+                Log::debug('mfa not authenticated, declining request');
                 return response()->json(['message' => "mfa Unauthenticated."], 401);
             }
         }
+        Log::debug('mfa not enabled! forwarding request');
 
         // if($user->session != \Session::getId()){
         //     return redirect()->route('auth-pin');
