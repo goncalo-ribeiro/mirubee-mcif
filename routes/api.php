@@ -13,6 +13,11 @@ use Illuminate\Http\Request;
 |
 */
 
+Route::group(['namespace'=>'\DestruidorPT\LaravelSQRLAuth\App\Http\Controllers'], function() {
+    Route::post('sqrl', 'SQRL\SQRLControllerAPI@sqrl');                # Route of API SQRL
+    Route::get('/sqrl', 'SQRL\SQRLControllerAPI@checkIfisReady');       # Route to check if the nonce is verified
+});
+
 Route::post('login', 'LoginControllerApi@login');
 Route::post('register', 'UserControllerApi@store');
 
@@ -58,6 +63,9 @@ Route::middleware('auth:api')->post('/mfa/setup/google', 'MfaMethodController@en
 Route::middleware('auth:api')->delete('/mfa/setup/google', 'MfaMethodController@disableGoogle');
 Route::middleware('auth:api')->post('/mfa/auth/google', 'MfaMethodController@authenticateThroughGoogle');
 Route::middleware('auth:api')->delete('/mfa/setup/u2f', 'MfaMethodController@disableU2F');
+
+Route::middleware('auth:api')->get('/mfa/setup/sqrlNonce', 'MfaMethodController@getSqrlNonce');
+Route::middleware('auth:api')->get('/mfa/sqrl', 'MfaMethodController@loginSqrl');
 
 //u2f
 Route::middleware('auth:api')->get('/u2f/createArgs', 'U2FController@getCreateArgs');

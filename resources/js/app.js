@@ -52,6 +52,7 @@ const mfaSetup = Vue.component('mfaSetup', require('./components/mfa/mfaSetup.vu
 const mfaSetupEmail = Vue.component('mfaSetupEmail', require('./components/mfa/setup/email.vue').default);
 const mfaSetupGoogle = Vue.component('mfaSetupGoogle', require('./components/mfa/setup/google.vue').default);
 const mfaSetupU2F = Vue.component('mfaSetupU2F', require('./components/mfa/setup/u2f.vue').default);
+const mfaSetupSQRL = Vue.component('mfaSetupSQRL', require('./components/mfa/setup/sqrl.vue').default);
 const mfaAuthentication = Vue.component('mfaAuthentication', require('./components/mfa/mfaAuthentication.vue').default);
 const mfaAuthenticationEmail = Vue.component('mfaAuthenticationEmail', require('./components/mfa/auth/email.vue').default);
 const mfaAuthenticationGoogle = Vue.component('mfaAuthenticationGoogle', require('./components/mfa/auth/google.vue').default);
@@ -102,6 +103,7 @@ const routes = [
             { path: '/mfa/setup/email', component: mfaSetupEmail, name:'mfaSetupEmail', props:true},
             { path: '/mfa/setup/google', component: mfaSetupGoogle, name:'mfaSetupGoogle', props:true},
             { path: '/mfa/setup/u2f', component: mfaSetupU2F, name:'mfaSetupU2F', props:true},
+            { path: '/mfa/setup/sqrl', component: mfaSetupSQRL, name:'mfaSetupSQRL', props:true},
         ]
     },
     /*

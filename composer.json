@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.2",
+        "destruidorpt/laravel-sqrl-auth": "^1.0",
         "fideloper/proxy": "^4.0",
         "laravel/framework": "^6.2",
         "laravel/passport": "^7.5",
@@ -39,7 +40,8 @@
         "classmap": [
             "database/seeds",
             "database/factories",
-            "app/Classes/WebAuthn"
+            "app/Classes/WebAuthn",
+            "vendor/destruidorpt/laravel-sqrl-auth/src/app/Http/Controllers/SQRL"
         ]
     },
     "autoload-dev": {

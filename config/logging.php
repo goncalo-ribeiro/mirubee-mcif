@@ -40,6 +40,13 @@ return [
             'channels' => ['daily'],
             'ignore_exceptions' => false,
         ],
+        
+        'LaravelSQRLAuth' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/LaravelSQRLAuth/' . date('Y/m/') . 'sqrl.log'), // add dynamic folder structure
+            'level' => 'debug',
+            'days' => 31, // set the maximum number of days in a month
+        ],
 
         'single' => [
             'driver' => 'single',
