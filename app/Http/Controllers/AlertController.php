@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Alert;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 use App\Http\Resources\Alert as AlertResource;
 
@@ -44,10 +45,15 @@ class AlertController extends Controller
     {
         $alert = new Alert;
 
+        Log::debug(strip_tags($request->input('name')));
+
         $request->validated();
         
         $alert->user()->associate(Auth::user());
         $alert->fill($request->all());
+
+       // $alert->name = strip_tags($request->input('name'));
+        
         $alert->save();
 
         return response()->json(['message' => 'a new alert was created', 'alert' => new AlertResource($alert)], 201);

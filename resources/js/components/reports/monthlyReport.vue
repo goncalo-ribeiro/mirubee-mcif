@@ -36,15 +36,15 @@
                 <thead>
                     <tr class="table-dark">
                         <th scope="col">tariff time zone</th>
-                        <th scope="col">consumption (kWa)</th>
+                        <th scope="col">consumption (kWh)</th>
                         <th scope="col">cost (€)</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>whole day</td>
-                        <td>{{consumptionSeriesSum}}</td>
-                        <td>{{simpleConsumptionCost}}</td>
+                        <td>{{Math.round(consumptionSeriesSum * 1000) /1000}}</td>
+                        <td>{{Math.round(simpleConsumptionCost * 1000) /1000}}</td>
                     </tr>
                 </tbody>
             </table>
@@ -54,24 +54,24 @@
                 <thead>
                     <tr class="table-dark">
                         <th scope="col">tariff time zone</th>
-                        <th scope="col">consumption (kWa)</th>
+                        <th scope="col">consumption (kWh)</th>
                         <th scope="col">cost (€)</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>off-peak hours</td>
-                        <td>{{consumptionSeriesSum}}</td>
-                        <td>{{offPeakConsumptionCost}}</td>
+                        <td>{{Math.round(consumptionSeriesSum * 1000) /1000}}</td>
+                        <td>{{Math.round(offPeakConsumptionCost * 1000) /1000}}</td>
                     </tr>
                     <tr>
                         <td>outside off-peak hours</td>
-                        <td>{{consumptionSeries2Sum}}</td>
-                        <td>{{outsideOffPeakConsumptionCost}}</td>
+                        <td>{{Math.round(consumptionSeries2Sum * 1000) /1000}}</td>
+                        <td>{{Math.round(outsideOffPeakConsumptionCost * 1000) /1000}}</td>
                     </tr>
                     <tr style="background-color: #073642">
                         <td colspan="2">total cost</td>
-                        <td>{{totalConsumptionCost}}</td>
+                        <td>{{Math.round(totalConsumptionCost * 1000) /1000}}</td>
                     </tr>
                 </tbody>
             </table>
@@ -81,7 +81,7 @@
                 <thead>
                     <tr class="table-dark">
                         <th scope="col">tariff time zone</th>
-                        <th scope="col">consumption (kWa)</th>
+                        <th scope="col">consumption (kWh)</th>
                         <th scope="col">cost (€)</th>
                     </tr>
                 </thead>
@@ -89,22 +89,22 @@
                 
                     <tr>
                         <td>off-peak hours</td>
-                        <td>{{consumptionSeriesSum}}</td>
-                        <td>{{offPeakConsumptionCost}}</td>
+                        <td>{{Math.round(consumptionSeriesSum * 1000) /1000}}</td>
+                        <td>{{Math.round(offPeakConsumptionCost * 1000) /1000}}</td>
                     </tr>
                     <tr>
                         <td>peak hours</td>
-                        <td>{{consumptionSeries2Sum}}</td>
-                        <td>{{peakConsumptionCost}}</td>
+                        <td>{{Math.round(consumptionSeries2Sum * 1000) /1000}}</td>
+                        <td>{{Math.round(peakConsumptionCost * 1000) /1000}}</td>
                     </tr>
                     <tr>
                         <td>full time hours</td>
-                        <td>{{consumptionSeries3Sum}}</td>
-                        <td>{{fullTimeConsumptionCost}}</td>
+                        <td>{{Math.round(consumptionSeries3Sum * 1000) /1000}}</td>
+                        <td>{{Math.round(fullTimeConsumptionCost * 1000) /1000}}</td>
                     </tr>
                     <tr style="background-color: #073642">
                         <td colspan="2">total cost</td>
-                        <td>{{totalConsumptionCost}}</td>
+                        <td>{{Math.round(totalConsumptionCost * 1000) /1000}}</td>
                     </tr>
                 </tbody>
             </table>
@@ -124,7 +124,7 @@
                     <tr>
                         <td>{{getSiteById(selectedSiteId).tariff.daily_power_price}}</td>
                         <td>{{series.length}}</td>
-                        <td>{{getSiteById(selectedSiteId).tariff.daily_power_price * series.length}}</td>
+                        <td>{{Math.round(getSiteById(selectedSiteId).tariff.daily_power_price * series.length * 1000) /1000}}</td>
                     </tr>
                 </tbody>
             </table>
@@ -142,8 +142,8 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>{{totalConsumptionCost}}</td>
-                        <td>{{getSiteById(selectedSiteId).tariff.daily_power_price * series.length}}</td>
+                        <td>{{Math.round(totalConsumptionCost * 1000) /1000}}</td>
+                        <td>{{Math.round(getSiteById(selectedSiteId).tariff.daily_power_price * series.length * 1000) /1000}}</td>
                         <td>{{getSiteById(selectedSiteId).tariff.tax}}</td>
                         <td>{{ Math.round(((totalConsumptionCost + (getSiteById(selectedSiteId).tariff.daily_power_price * series.length)) *
                             (1 + (getSiteById(selectedSiteId).tariff.tax) * .01)) * 1000) / 1000}}</td>
@@ -190,7 +190,7 @@ export default {
 
                 selectedUnit: 0,
                 units: [
-                    {name:'energy consumption (kWa)', nameDB:'e'},
+                    {name:'energy consumption (kWh)', nameDB:'e'},
                     {name:'consumption costs (€)', nameDB:'€'},
                     {name:'voltage (V)', nameDB:'v'},
                     {name:'current (A)', nameDB:'i'},
