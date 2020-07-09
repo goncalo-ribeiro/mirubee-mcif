@@ -186,7 +186,17 @@ class MfaMethodController extends Controller
 
     public function getSqrlNonce()
     {
-        return response()->json(['nonce' => SQRL\SQRL\SQRLController::getNewAuthNonce()], 200);        
+        $nonce = SQRL\SQRL\SQRLController::getNewAuthNonce();
+        $qrUrl = null;
+        foreach ($nonce as $key => $value){
+            if ($key == "url_login_sqrl"){
+                $qrUrl=$value;
+            }
+        }
+        //$qr = QrCode::size(100)->generate($qrUrl);
+        $response = response()->json(['nonce' => $nonce], 200);
+        Log::debug($response);
+        return $response;        
     }
 
     public function loginSqrl(Request $request){

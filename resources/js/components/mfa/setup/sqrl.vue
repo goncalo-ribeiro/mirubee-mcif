@@ -14,10 +14,10 @@
                             <div  v-if="nonce" class="form-row">
                                 <div class=" col-md-3">
                                 </div>
-                                <div class=" col-md-6">
-                                    <a class="mx-auto" id="sqrl" :href="nonce.url_login_sqrl" v-on:click="sqrlLinkClick();return true;" tabindex="-1">
-                                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/SQRL_icon_vector_outline.svg/1200px-SQRL_icon_vector_outline.svg.png" style="margin-left:30px;margin-top:30px" class="card-img sqrl-logo" border="0" alt=" SQRL Code - Click to authenticate your SQRL identity ">
-                                        <p style="margin-left:30px;margin-top:20px"> {!! QrCode::size(100)->generate($url_login_sqrl); !!} </p>
+                                <div class="col-md-6">
+                                    <a  id="sqrl" :href="nonce.url_login_sqrl" v-on:click="sqrlLinkClick();" tabindex="-1" >
+                                        <img style="margin-left: auto; margin-right: auto; width: 150px; height:150px; float: left;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/SQRL_icon_vector_outline.svg/1200px-SQRL_icon_vector_outline.svg.png" class="card-img sqrl-logo" border="0" alt=" SQRL Code - Click to authenticate your SQRL identity ">
+                                        <img style="margin-left: auto; margin-right: auto; width: 150px; height:150px; float: right;" :src="'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + nonce.url_login_sqrl">
                                     </a>
                                 </div>
                                 <div class="col-md-3">
@@ -40,6 +40,7 @@ export default {
         },
         activated(){
             this.getNonce();
+            /*
             this.gifProbe.onload = function() {          // define our load-success function
                 this.sqrlScheme = false;			// prevent retriggering of the SQRL QR code.
                 console.log('this.gifProbe.onload', this.localhostRoot + this.encodedSqrlUrl)
@@ -47,15 +48,15 @@ export default {
             };
             this.gifProbe.onerror = function() { // define our load-failure function
                 setTimeout( function(){ this.gifProbe.src = this.localhostRoot + Date.now() + '.gif';	}, 250 );
-            }
+            }*/
             this.pollForNextPage();
         },
         data: function(){
             return {
                 nonce: null,
-                newSync: false, lastSync: false, encodedSqrlUrl: false, sqrlScheme: true,
-                gifProbe: new Image(),			// create an instance of a memory-based probe image
-                localhostRoot: 'http://localhost:25519/',	// the SQRL client listener
+                /*encodedSqrlUrl: false, sqrlScheme: true,*/
+                /*gifProbe: new Image(),			// create an instance of a memory-based probe image
+                localhostRoot: 'http://localhost:25519/',	// the SQRL client listener*/
             }
         },
         props: {
@@ -105,6 +106,7 @@ export default {
                     console.log(response);
                     if(response.data.isReady == true) {
                         console.log('response ready', response.data.nextPage);
+                        Vue.toasted.show('Associating your SQRL identity to your user account...', { icon : 'check', type: 'success'});
                         //document.location.href = response.data.nextPage;
                     } else {
                         console.log('response not ready');
