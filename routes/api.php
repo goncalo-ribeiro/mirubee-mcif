@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 */
 
 Route::group(['namespace'=>'\DestruidorPT\LaravelSQRLAuth\App\Http\Controllers'], function() {
-    Route::post('sqrl', 'SQRL\SQRLControllerAPI@sqrl');                # Route of API SQRL
+    Route::post('sqrl', 'SQRL\SQRLControllerAPI@sqrl');                 # Route of API SQRL
     Route::get('/sqrl', 'SQRL\SQRLControllerAPI@checkIfisReady');       # Route to check if the nonce is verified
 });
 

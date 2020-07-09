@@ -190,12 +190,22 @@ class MfaMethodController extends Controller
     }
 
     public function loginSqrl(Request $request){
-        if(isset($_GET["nut"]) && !empty($_GET["nut"])) { // Check if the nut exist or if it's past on URL https://site.test?nut=<nonce value>
-            $object = SQRL\SQRL\SQRLController::getUserByOriginalNonceIfCanBeAuthenticated($_GET["nut"]); //Get the user by the original nonce
+        $nut = $request->nut;
+        if(isset($nut) && !empty($nut)) { // Check if the nut exist or if it's past on URL https://site.test?nut=<nonce value>
+            $object = SQRL\SQRL\SQRLController::getUserByOriginalNonceIfCanBeAuthenticated($nut); //Get the user by the original nonce
             if(isset($object)) { //Will be null if the nonce expired or is invalid
                 if($object instanceof Sqrl_pubkey) { // This only happen when no SQRL Client is associated to the user, then Sqrl_pubkey from SQRL CLient is returned
                     //new user
-                    return view('LaravelSQRLAuthExemples.newsqrl');//View for the user to create account or associate to one already created
+                    //return view('LaravelSQRLAuthExemples.newsqrl');//View for the user to create account or associate to one already created
+                    $user = Auth::user();
+                    $mfaMethod = $user->mfaMethod;
+
+                    $object->user_id = $user->id; // So the user was created then lets associate to the user already existing
+                    $object->save();
+
+                    $mfaMethod->sqrl_code = $object->public_key;
+                    $mfaMethod->save();
+                    return response()->json(['message' => 'SQRL authentication set up!', 'user' => new UserResource(Auth::user())], 200);        
                 } else if($object > 0) { //This happen when SQRL Client is associated to a user, so the value is number and is the id of the user
                     Auth::loginUsingId($object); //This is for authenticate the user with that id
                 }
