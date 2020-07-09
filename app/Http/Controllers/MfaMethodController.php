@@ -10,6 +10,7 @@ use App\Notifications\EmailActivation as EmailActivationNotification;
 use App\Notifications\EmailAuthentication as EmailAuthenticationNotification; 
 use App\Http\Resources\Users as UserResource;
 use App\Classes\GoogleAuthenticator;
+use DestruidorPT\LaravelSQRLAuth\App\Http\Controllers as SQRL;
 
 class MfaMethodController extends Controller
 {
@@ -181,6 +182,25 @@ class MfaMethodController extends Controller
         $userU2FAuthMethod->delete();
 
         return response()->json(['message' => 'u2f authenticator method disabled', 'user' => new UserResource(Auth::user())], 200);        
+    }
+
+    public function getSqrlNonce()
+    {
+        return response()->json(['nonce' => SQRL\SQRL\SQRLController::getNewAuthNonce()], 200);        
+    }
+
+    public function loginSqrl(Request $request){
+        if(isset($_GET["nut"]) && !empty($_GET["nut"])) { // Check if the nut exist or if it's past on URL https://site.test?nut=<nonce value>
+            $object = SQRL\SQRL\SQRLController::getUserByOriginalNonceIfCanBeAuthenticated($_GET["nut"]); //Get the user by the original nonce
+            if(isset($object)) { //Will be null if the nonce expired or is invalid
+                if($object instanceof Sqrl_pubkey) { // This only happen when no SQRL Client is associated to the user, then Sqrl_pubkey from SQRL CLient is returned
+                    //new user
+                    return view('LaravelSQRLAuthExemples.newsqrl');//View for the user to create account or associate to one already created
+                } else if($object > 0) { //This happen when SQRL Client is associated to a user, so the value is number and is the id of the user
+                    Auth::loginUsingId($object); //This is for authenticate the user with that id
+                }
+            }
+        }
     }
 
 }

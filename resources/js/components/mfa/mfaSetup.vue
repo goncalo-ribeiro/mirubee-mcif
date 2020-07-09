@@ -123,8 +123,20 @@ export default {
 
             },
             clickCheckboxSqrl(evt, method) {
-                console.log('clickCheckboxSqrl(evt, method)');
+                console.log('clickCheckboxSQRL(evt, method)');
+                if(this.myUser.mfaMethods.sqrl){
+                    this.disableSQRLMFA();
+                }else{
+                    this.$router.push({ name: 'mfaSetupSQRL', params: { user: this.myUser,}}).catch(err => 
+                    {
+                        console.log(err)
+                    });
+                }
 
+            },
+
+            disableSQRLMFA(){
+                console.log('disable sqrl');
             },
 
             enableEmailMFA(){
