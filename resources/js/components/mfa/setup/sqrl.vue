@@ -16,8 +16,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <a  id="sqrl" :href="nonce.url_login_sqrl" v-on:click="sqrlLinkClick();" tabindex="-1" >
-                                        <img style="margin-left: auto; margin-right: auto; width: 150px; height:150px; float: left;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/SQRL_icon_vector_outline.svg/1200px-SQRL_icon_vector_outline.svg.png" class="card-img sqrl-logo" border="0" alt=" SQRL Code - Click to authenticate your SQRL identity ">
-                                        <img style="margin-left: auto; margin-right: auto; width: 150px; height:150px; float: right;" :src="'https://qrcode.tec-it.com/API/QRCode/?size=small&data=' + nonce.url_login_sqrl">
+                                        <img style="margin-left: auto; margin-right: auto; width: 200px; height:200px; float: left;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/SQRL_icon_vector_outline.svg/1200px-SQRL_icon_vector_outline.svg.png" class="card-img sqrl-logo" border="0" alt=" SQRL Code - Click to authenticate your SQRL identity ">
+                                        <img style="margin-left: auto; margin-right: auto; width: 200px; height:200px; float: right;" :src="'https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=' + nonce.url_login_sqrl">
                                     </a>
                                 </div>
                                 <div class="col-md-3">

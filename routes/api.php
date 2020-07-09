@@ -65,7 +65,7 @@ Route::middleware('auth:api')->post('/mfa/auth/google', 'MfaMethodController@aut
 Route::middleware('auth:api')->delete('/mfa/setup/u2f', 'MfaMethodController@disableU2F');
 
 Route::middleware('auth:api')->get('/mfa/setup/sqrlNonce', 'MfaMethodController@getSqrlNonce');
-Route::middleware('auth:api')->get('/mfa/sqrl', 'MfaMethodController@loginSqrl');
+Route::middleware('auth:api')->post('/mfa/sqrl', 'MfaMethodController@loginSqrl');
 
 //u2f
 Route::middleware('auth:api')->get('/u2f/createArgs', 'U2FController@getCreateArgs');
