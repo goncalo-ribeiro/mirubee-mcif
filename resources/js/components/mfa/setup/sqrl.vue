@@ -9,15 +9,19 @@
 
                     <div class="card-body" >
                         <div>
-                            <p>associate your SQRL identity with you user account bellow</p>
+                            <p>associate your SQRL identity with you user account</p>
+                            <p>click on the image or scan the QR code below</p>
                             
                             <div  v-if="nonce" class="form-row">
                                 <div class=" col-md-3">
                                 </div>
                                 <div class="col-md-6">
+                                    <!--
                                     <a  id="sqrl" :href="nonce.url_login_sqrl" v-on:click="sqrlLinkClick();" tabindex="-1" >
-                                        <img style="margin-left: auto; margin-right: auto; width: 200px; height:200px; float: left;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/SQRL_icon_vector_outline.svg/1200px-SQRL_icon_vector_outline.svg.png" class="card-img sqrl-logo" border="0" alt=" SQRL Code - Click to authenticate your SQRL identity ">
-                                        <img style="margin-left: auto; margin-right: auto; width: 200px; height:200px; float: right;" :src="'https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=' + nonce.url_login_sqrl">
+                                        -->
+                                    <a  id="sqrl" v-on:click="sqrlLinkClick();" tabindex="-1" style="cursor: pointer" >
+                                        <img style="margin-left: auto; margin-right: auto; width: 200px; height:200px; float: left;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/SQRL_icon_vector_outline.svg/1200px-SQRL_icon_vector_outline.svg.png" class="card-img sqrl-logo" border="0" alt="Click to authenticate SQRL identity">
+                                        <img style="margin-left: auto; margin-right: auto; width: 200px; height:200px; float: right;" :src="'https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=' + nonce.url_login_sqrl" alt="Sqrl Qr Code">
                                     </a>
                                 </div>
                                 <div class="col-md-3">
@@ -45,6 +49,7 @@ export default {
         data: function(){
             return {
                 nonce: null,
+                window: null,
             }
         },
         props: {
@@ -77,6 +82,8 @@ export default {
 
             sqrlLinkClick(e) {
                 console.log('sqrlLinkClick')
+                this.window = window.open(myUrl+'/sqrl/login?nut='+this.nonce.nonce, 'windowName', 'location=yes, height=500, width=820, ,left=30,top=30, toolbar=yes, scrollbars=yes, status=yes, menubar=yes');
+                newWindow.focus();
             },
 
             pollForNextPage() {
@@ -86,7 +93,7 @@ export default {
                     return;								// not viewing the page, check again in 5 seconds.
                 }
 
-                axios.get(this.url)
+                axios.get(this.url, {headers: {'Access-Control-Allow-Origin': '*'}})
                 .then( response => {
                     console.log(response);
                     if(response.data.isReady == true) {

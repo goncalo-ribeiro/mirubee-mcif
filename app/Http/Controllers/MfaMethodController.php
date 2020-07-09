@@ -11,6 +11,7 @@ use App\Notifications\EmailAuthentication as EmailAuthenticationNotification;
 use App\Http\Resources\Users as UserResource;
 use App\Classes\GoogleAuthenticator;
 use DestruidorPT\LaravelSQRLAuth\App\Http\Controllers as SQRL;
+use DestruidorPT\LaravelSQRLAuth\App\Sqrl_pubkey;
 
 class MfaMethodController extends Controller
 {
@@ -189,10 +190,16 @@ class MfaMethodController extends Controller
         return response()->json(['nonce' => SQRL\SQRL\SQRLController::getNewAuthNonce()], 200);        
     }
 
+    public function getSqrlAuthView(Request $request) {
+        return view('sqrlLogin', ['nut' => $_GET['nut']]);
+    }
+
     public function loginSqrl(Request $request){
         $nut = $request->nut;
+        Log::debug($nut);
         if(isset($nut) && !empty($nut)) { // Check if the nut exist or if it's past on URL https://site.test?nut=<nonce value>
             $object = SQRL\SQRL\SQRLController::getUserByOriginalNonceIfCanBeAuthenticated($nut); //Get the user by the original nonce
+            Log::debug($object);
             if(isset($object)) { //Will be null if the nonce expired or is invalid
                 if($object instanceof Sqrl_pubkey) { // This only happen when no SQRL Client is associated to the user, then Sqrl_pubkey from SQRL CLient is returned
                     //new user
