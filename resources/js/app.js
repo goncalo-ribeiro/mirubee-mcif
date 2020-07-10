@@ -57,6 +57,7 @@ const mfaAuthentication = Vue.component('mfaAuthentication', require('./componen
 const mfaAuthenticationEmail = Vue.component('mfaAuthenticationEmail', require('./components/mfa/auth/email.vue').default);
 const mfaAuthenticationGoogle = Vue.component('mfaAuthenticationGoogle', require('./components/mfa/auth/google.vue').default);
 const mfaAuthenticationU2F = Vue.component('mfaAuthenticationU2F', require('./components/mfa/auth/u2f.vue').default);
+const mfaAuthenticationSQRL = Vue.component('mfaAuthenticationSQRL', require('./components/mfa/auth/sqrl.vue').default);
 
 /*
 const echartString =  Vue.component('echartString', require('./components/charts/echartString.vue').default);
@@ -85,6 +86,7 @@ const routes = [
     { path: '/mfa/authentication/email', component: mfaAuthenticationEmail, name:'mfaAuthenticationEmail', props:true},
     { path: '/mfa/authentication/google', component: mfaAuthenticationGoogle, name:'mfaAuthenticationGoogle', props:true},
     { path: '/mfa/authentication/u2f', component: mfaAuthenticationU2F, name:'mfaAuthenticationU2F', props:true},
+    { path: '/mfa/authentication/sqrl', component: mfaAuthenticationSQRL, name:'mfaAuthenticationSQRL', props:true},
     { path: '/', component: mainComponent,
         children: [
             { path: '/sites/retriever', component: siteRetriever, name: 'siteRetriever'},

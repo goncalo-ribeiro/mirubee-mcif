@@ -19,4 +19,4 @@ Auth::routes();
 
 //Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/sqrl/login', 'MFAMethodController@getSqrlAuthView');
+Route::get('/sqrl/login', 'MfaMethodController@getSqrlAuthView');

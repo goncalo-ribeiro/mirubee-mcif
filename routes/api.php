@@ -66,12 +66,13 @@ Route::middleware('auth:api')->delete('/mfa/setup/u2f', 'MfaMethodController@dis
 
 Route::middleware('auth:api')->get('/mfa/setup/sqrlNonce', 'MfaMethodController@getSqrlNonce');
 Route::middleware('auth:api')->post('/mfa/sqrl', 'MfaMethodController@loginSqrl');
+Route::middleware('auth:api')->delete('/mfa/setup/sqrl', 'MfaMethodController@disableU2F');
 
 //u2f
 Route::middleware('auth:api')->get('/u2f/createArgs', 'U2FController@getCreateArgs');
 Route::middleware('auth:api')->post('/u2f/processCreate', 'U2FController@processCreate');
 Route::middleware('auth:api')->get('/u2f/getArgs', 'U2FController@getGetArgs');
-Route::middleware('auth:api')->post('/u2f/processGet', 'U2FController@processGet');
+Route::middleware('auth:api')->post('/u2f/processGet', 'MfaMethodController@disableSQRL');
 
 // read notifications
 Route::middleware('auth:api')->put('alerts/{alertId}/notifications', 'AlertController@readNotifications');

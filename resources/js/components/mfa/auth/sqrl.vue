@@ -1,37 +1,32 @@
 <template>
-    <div class="mt-5 container">
-        <div class="row justify-content-center">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        multi factor authentication SQRL setup
-                    </div>
 
-                    <div class="card-body" >
-                        <div>
-                            <p>associate your SQRL identity with you user account</p>
-                            <p>click on the image or scan the QR code below:</p>
+<div class="container" id="mfa-form">
+            <div class="row my-5">
+                <div class="col-md-8 m-auto animatebottom">
+                    <div class="jumbotron">
+                        <h1 class="display-4">MFA - SQRL</h1>
+                        <p class="lead">use your sqrl identity to authenticate yourself</p>
+                        <hr class="my-4">
+
+                        <p>please scan the qr code below to authenticate yourself:</p>
+
                             
-                            <div  v-if="nonce" class="form-row">
-                                <div class=" col-md-3">
-                                </div>
-                                <div class="col-md-6">
-                                    <!--
-                                    <a  id="sqrl" :href="nonce.url_login_sqrl" v-on:click="sqrlLinkClick();" tabindex="-1" >
-                                        -->
-                                    <a  id="sqrl" v-on:click="sqrlLinkClick();" tabindex="-1" style="cursor: pointer" >
-                                        <img style="margin-left: auto; margin-right: auto; width: 200px; height:200px; float: left;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/SQRL_icon_vector_outline.svg/1200px-SQRL_icon_vector_outline.svg.png" class="card-img sqrl-logo" border="0" alt="Click to authenticate SQRL identity">
-                                        <img style="margin-left: auto; margin-right: auto; width: 200px; height:200px; float: right;" :src="'https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=' + nonce.url_login_sqrl" alt="Sqrl Qr Code">
-                                    </a>
-                                </div>
-                                <div class="col-md-3">
-                                </div>
+                        <div  v-if="nonce" class="form-row">
+                            <div class=" col-md-3">
                             </div>
-                            <!--
-                            <div class="m-2">
-                                <iframe frameborder="0" height=500 width=820 name="sqrlFrame"></iframe>
+                            <div class="col-md-6">
+                                <!--
+                                <a  id="sqrl" :href="nonce.url_login_sqrl" v-on:click="sqrlLinkClick();" tabindex="-1" >
+                                    -->
+                                <a  id="sqrl" v-on:click="sqrlLinkClick();" tabindex="-1" style="cursor: pointer" >
+                                    <img style="margin-left: auto; margin-right: auto; width: 200px; height:200px; float: left;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/SQRL_icon_vector_outline.svg/1200px-SQRL_icon_vector_outline.svg.png" class="card-img sqrl-logo" border="0" alt="Click to authenticate SQRL identity">
+                                    <img style="margin-left: auto; margin-right: auto; width: 200px; height:200px; float: right;" :src="'https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=' + nonce.url_login_sqrl" alt="Sqrl Qr Code">
+                                </a>
+                                <input id="remember" class="form-check-input ml-0"  v-model="remember" type="checkbox">
+                                <label style="margin-left: 1.25rem" for="remember">remember this device</label> 
                             </div>
-                            -->
+                            <div class="col-md-3">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -43,9 +38,9 @@
 <script>
 //var gifProbe = new Image();
 export default {
-        name: "mfa-sqrl-setup",
+        name: "mfa-sqrl-auth",
         mounted() {
-            console.log('mfa sqrl setup component mounted.');
+            console.log('mfa sqrl auth component mounted.');
         },
         activated(){
             this.getNonce();
@@ -58,11 +53,12 @@ export default {
             return {
                 nonce: null,
                 window: null,
-                refreshTimer: 3000 // time between each sqrl status check 
             }
         },
         props: {
             user: Object,
+            remember: false,
+            refreshTimer: 3000, //check sqrl status every 3 seconds
         },
         computed:{
             url: function (){

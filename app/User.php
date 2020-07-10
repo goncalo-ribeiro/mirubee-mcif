@@ -73,6 +73,11 @@ class User extends Authenticatable
         return $this->hasOne('App\U2FAuthenticationMethod');
     }
 
+    public function sqrlPubkey() 
+    {
+        return $this->hasOne('DestruidorPT\LaravelSQRLAuth\App\Sqrl_pubkey');
+    }
+
     //o argumento $nickname devia ter outro nome, pois caso a função não encontre o utilizador com o nickname tenta faze-lo com email
     //devia ser chamado de $loginCredential
     /*

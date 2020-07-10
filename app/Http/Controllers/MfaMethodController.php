@@ -92,9 +92,9 @@ class MfaMethodController extends Controller
         $mfaMethod = $user->mfaMethod;
         if(\Hash::check($request->code, $mfaMethod->email_code))
         {
+            $mfaMethod->authenticated = true;
+            $mfaMethod->save();
             if($request->remember){
-                $mfaMethod->authenticated = true;
-                $mfaMethod->save();
                 if(is_null($mfaMethod->remember_mfa_token)){
                     $mfaMethod->remember_mfa_token = \Hash::make(\Str::random(20));
                     $mfaMethod->save();
@@ -201,23 +201,46 @@ class MfaMethodController extends Controller
             $object = SQRL\SQRL\SQRLController::getUserByOriginalNonceIfCanBeAuthenticated($nut); //Get the user by the original nonce
             Log::debug($object);
             if(isset($object)) { //Will be null if the nonce expired or is invalid
+                $user = Auth::user();
+                $mfaMethod = $user->mfaMethod;
                 if($object instanceof Sqrl_pubkey) { // This only happen when no SQRL Client is associated to the user, then Sqrl_pubkey from SQRL CLient is returned
                     //new user
-                    //return view('LaravelSQRLAuthExemples.newsqrl');//View for the user to create account or associate to one already created
-                    $user = Auth::user();
-                    $mfaMethod = $user->mfaMethod;
-
                     $object->user_id = $user->id; // So the user was created then lets associate to the user already existing
                     $object->save();
 
                     $mfaMethod->sqrl_code = $object->public_key;
                     $mfaMethod->save();
                     return response()->json(['message' => 'SQRL authentication set up!', 'user' => new UserResource(Auth::user())], 200);        
-                } else if($object > 0) { //This happen when SQRL Client is associated to a user, so the value is number and is the id of the user
-                    Auth::loginUsingId($object); //This is for authenticate the user with that id
+                } else if($object > 0 && $object == $user->id) { //This happen when SQRL Client is associated to a user, so the value is number and is the id of the user
+                    $mfaMethod->authenticated = true;
+                    $mfaMethod->save();
+                    if($request->remember){
+                        if(is_null($mfaMethod->remember_mfa_token)){
+                            $mfaMethod->remember_mfa_token = \Hash::make(\Str::random(20));
+                            $mfaMethod->save();
+                        }
+                        return response()->json(['message' => 'authenticated through email', 'remember_token' => $mfaMethod->remember_mfa_token], 200);        
+        
+                    }
+                    return response()->json(['message' => 'authenticated through email', 'remember_token' => null], 200);                    
                 }
             }
         }
+        return response()->json(['errors' => ['sqrl code' => ["invalid sqrl response"]]], 400);
+    }
+
+    public function disableSQRL()
+    {
+        $user = Auth::user();
+        $mfaMethod = $user->mfaMethod;
+        
+        $mfaMethod->sqrl_code = null;
+        $mfaMethod->save();
+
+        $sqrl_pubkey = $user->sqrlPubkey;
+        $sqrl_pubkey->delete();
+
+        return response()->json(['message' => 'sqrl authentication method disabled', 'user' => new UserResource(Auth::user())], 200);        
     }
 
 }

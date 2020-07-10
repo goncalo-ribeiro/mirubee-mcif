@@ -136,7 +136,28 @@ export default {
             },
 
             disableSQRLMFA(){
-                console.log('disable sqrl');
+                console.log('disable SQRL')
+                axios.delete(myUrl+"/api/mfa/setup/sqrl")
+                .then( response => {
+                    console.log(response.data);
+                    Vue.toasted.show(response.data.message, { icon : 'check', type: 'success'});
+
+                    this.$emit('user-updated', response.data.user);
+                    this.myUser = response.data.user;
+                    $('#google-setup-check').prop('checked', false);
+                     
+                })
+                .catch(error => {
+                    console.log(error.response);
+                
+                    let errors = error.response.data.errors;
+
+                    for (let key in errors){
+                        errors[key].forEach(err => 
+                            Vue.toasted.show(err, { icon : 'cancel', type: 'error'})
+                        );
+                    }
+                })
             },
 
             enableEmailMFA(){

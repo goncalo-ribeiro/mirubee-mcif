@@ -81,7 +81,10 @@ export default {
                         });                             
                         break;
                     case 'sqrl':
-                        
+                        this.$router.push({ name: 'mfaAuthenticationSQRL', params: { user: this.user,}}).catch(err => 
+                        {
+                            console.log(err)
+                        }); 
                         break;
                 }
             }
