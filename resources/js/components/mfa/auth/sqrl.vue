@@ -28,6 +28,16 @@
                             <div class="col-md-3">
                             </div>
                         </div>
+                        <div style="height:5vh; width: 100%">
+                        </div>
+
+                        <div class="form-row mt-3">
+                            <div class=" col-md-4">
+                                <button type="button" class="btn btn-danger" style="width: 100%" v-on:click="goBack">back</button>
+                            </div>
+                            <div class=" col-md-8">                                
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -66,6 +76,10 @@ export default {
             }
         },
         methods:{
+            goBack(){
+                this.$router.push({ name: 'mfaAuthentication',  params: { user: this.user,}})
+            },
+            
             getNonce(){
                 axios.get(myUrl+"/api/mfa/setup/sqrlNonce")
                 .then( response => {
