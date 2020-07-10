@@ -58,11 +58,22 @@ export default {
             return {
                 nonce: null,
                 window: null,
-                refreshTimer: 3000 // time between each sqrl status check 
+                refreshTimer: 3000, // time between each sqrl status check 
+                timeout: null,
             }
         },
         props: {
             user: Object,
+        },
+        watch:{
+            $route (to, from){
+                if(this.window){
+                    this.window.close();
+                }
+                if(this.timeout){
+                    clearTimeout(this.timeout);
+                }
+            }
         },
         computed:{
             url: function (){
@@ -99,7 +110,7 @@ export default {
             pollForNextPage() {
                 console.log('pollForNextPage');
                 if (document.hidden || this.nonce == null) {					// before probing for any page change, we check to 
-                    setTimeout(this.pollForNextPage, this.refreshTimer);	// see whether the page is visible. If the user is 
+                    this.timeout = setTimeout(this.pollForNextPage, this.refreshTimer);	// see whether the page is visible. If the user is 
                     return;								// not viewing the page, check again in 5 seconds.
                 }
 
@@ -145,12 +156,12 @@ export default {
                             Vue.toasted.show('Nut expired! Please reload this component and try again, if you want to Authenticate by SQRL', { icon : 'cancel', type: 'error'})
 
                         } else {
-                            setTimeout(this.pollForNextPage, this.refreshTimer); // next check in this.refreshTimer milliseconds 
+                            this.timeout = setTimeout(this.pollForNextPage, this.refreshTimer); // next check in this.refreshTimer milliseconds 
                         }
                     }
                 })
                 .catch(error => {
-                    setTimeout(this.pollForNextPage, this.refreshTimer); // next check in this.refreshTimer milliseconds 
+                    this.timeout = setTimeout(this.pollForNextPage, this.refreshTimer); // next check in this.refreshTimer milliseconds 
                 })
             },
         }

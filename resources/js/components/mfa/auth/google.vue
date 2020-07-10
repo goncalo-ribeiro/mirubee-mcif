@@ -15,8 +15,7 @@
                             <div class=" col-md-6">
                                 <input type="text" class="form-control" id="google-activation-code" placeholder="google authenticator code" v-model="code">
                                 <input id="remember" class="form-check-input ml-0"  v-model="remember" type="checkbox">
-                                <label style="margin-left: 1.25rem" for="remember">remember this device</label>
-                                                               
+                                <label style="margin-left: 1.25rem" for="remember">remember this device</label>                             
                             </div>
                             <div class=" col-md-3">
                             </div>
