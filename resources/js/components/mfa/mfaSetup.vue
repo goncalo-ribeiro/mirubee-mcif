@@ -144,7 +144,7 @@ export default {
 
                     this.$emit('user-updated', response.data.user);
                     this.myUser = response.data.user;
-                    $('#google-setup-check').prop('checked', false);
+                    $('#sqrl-setup-check').prop('checked', false);
                      
                 })
                 .catch(error => {

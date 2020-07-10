@@ -118,7 +118,6 @@ export default {
                 console.log('sqrlLinkClick')
                 //this.window = window.open(myUrl+'/sqrl/login?nut='+this.nonce.nonce, 'sqrlFrame', 'location=yes, height=500, width=820, ,left=30,top=30, toolbar=yes, scrollbars=yes, status=yes, menubar=yes');
                 this.window = window.open(myUrl+'/sqrl/login?nut='+this.nonce.nonce, '_blank', 'location=yes, height=500, width=820, ,left=30,top=30, toolbar=yes, scrollbars=yes, status=yes, menubar=yes');
-                newWindow.focus();
             },
 
             pollForNextPage() {
@@ -133,7 +132,9 @@ export default {
                     console.log(response);
                     if(response.data.isReady == true) {
                         console.log('response ready', response.data.nextPage);
-                        this.window.close();
+                        if(this.window){
+                            this.window.close();
+                        }
                         Vue.toasted.show('Sqrl identity verified...', { icon : 'hourglass_empty', type: 'success'});
 
                         axios.post(myUrl+"/api/mfa/sqrl", {nut: this.nonce.nonce})
