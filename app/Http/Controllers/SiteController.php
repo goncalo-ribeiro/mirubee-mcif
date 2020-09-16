@@ -16,6 +16,7 @@ use App\Http\Requests\Tariff as TariffRequest;
 use App\Http\Resources\Site as SiteResource;
 use App\Http\Resources\Device as DeviceResource;
 use App\Http\Resources\Tariff as TariffResource;
+use App\Http\Resources\ReadingThreePhase as ReadingThreePhaseResource;
 
 class SiteController extends Controller
 {
@@ -28,8 +29,16 @@ class SiteController extends Controller
     {
         //abort(403, 'Unauthorized action.');
         $user = Auth::user();
+        $sites = $user->sites;
 
-        return SiteResource::collection($user->sites);
+        /* o site resource ja faz isto
+        foreach ($sites as &$site) {
+            if(!is_null($site->location)){
+                $site->location = decrypt($site->location);
+            }
+        }
+*/
+        return SiteResource::collection($sites);
     }
 
     /**
@@ -52,7 +61,7 @@ class SiteController extends Controller
     {
         $site = new Site;
         $name = $request->name;
-        $location = $request->location;
+        $location = encrypt($request->location);
         $user = Auth::user();
 
         $validation = $request->validate([
@@ -101,7 +110,7 @@ class SiteController extends Controller
     {
         $site = Site::where('id', $request->id)->first();
         $name = $request->name;
-        $location = $request->location;
+        $location = encrypt($request->location);
         $user = Auth::user();
         
         if (is_null($site)){
@@ -165,7 +174,7 @@ class SiteController extends Controller
         $readings = $site->readingsThreePhase->whereBetween('time', [$start, $end])->sortBy('time')->values();
         //Log::debug($readings);
 
-        return response()->json(['message' => 'readings successfully retrieved', 'readings' => $readings, 'params' => [$start, $end]], 200);
+        return response()->json(['message' => 'readings successfully retrieved', 'readings' => ReadingThreePhaseResource::collection($readings), 'params' => [$start, $end]], 200);
         
         //dd($siteId, $start, $end);
     }

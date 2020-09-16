@@ -19,7 +19,7 @@ class Site extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'user' => $this->user->name,
-            'location' => $this->location,
+            'location' => is_null($this->location) ? null : decrypt($this->location),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'tariff' => is_null($this->tariff) ? null : new TariffResource($this->tariff),
